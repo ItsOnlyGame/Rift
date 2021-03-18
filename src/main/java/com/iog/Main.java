@@ -27,11 +27,17 @@ public class Main {
     public static void main(final String[] args) {
         Settings settings = Settings.getSettings();
 
+        /*
+         * Login to Discord API
+         */
         logger.info("Started Rift with Version: " + Version);
         final DiscordClient client = DiscordClient.create(settings.DiscordToken);
         Main.gateway = client.login().block();
         assert gateway != null;
 
+        /*
+         * Sets Discord API events and creates CommandHandler
+         */
         CommandHandler commandHandler = new CommandHandler();
         gateway.on(MessageCreateEvent.class).subscribe(commandHandler::handle);
         gateway.on(VoiceStateUpdateEvent.class).subscribe(EventHandler::VoiceStateUpdate);
@@ -61,8 +67,12 @@ public class Main {
         PropertyConfigurator.configure(properties);
     }
 
+    /**
+     * Gets the current version that gradle generates, so I don't have to do manual labor every time I update
+     * @return The current version from version.txt
+     */
     private static String readVersion() {
-        InputStream stream = Main.class.getResourceAsStream("./version.txt");
+        InputStream stream = Main.class.getResourceAsStream("version.txt");
         try {
             if (stream != null) {
                 return IOUtils.toString(stream, StandardCharsets.UTF_8);

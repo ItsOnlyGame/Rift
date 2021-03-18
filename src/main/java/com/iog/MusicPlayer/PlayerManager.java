@@ -100,6 +100,7 @@ public class PlayerManager {
 
                 message.getChannel().subscribe(channel -> {
                     if (musicManager.getPlayer().getPlayingTrack() == null) {
+
                         channel.createEmbed(spec ->
                                 spec.setAuthor("Playing", null, message.getAuthor().orElseThrow().getAvatarUrl())
                                         .setColor(Settings.getSettings().getNormalColor())

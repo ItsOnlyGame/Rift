@@ -43,7 +43,7 @@ public class Delete extends BasicCommand {
                     .transform(channel::bulkDeleteMessages)
                     .subscribe());
         }
-        if (!GuildSettings.of(message.getGuildId().orElseThrow().asLong()).isDeleteMessageAfterCommand()) {
+        if (!GuildSettings.of(message.getGuildId().orElseThrow().asLong()).isAutoClean()) {
             message.delete().subscribe();
         }
     }

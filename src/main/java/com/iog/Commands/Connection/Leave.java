@@ -40,7 +40,8 @@ public class Leave extends BasicCommand {
                  message.getGuild().subscribe(guild -> guild.getSelfMember().subscribe(self -> self.getVoiceState().subscribe(selfVoiceState -> {
                     VoiceChannel voiceChannel = selfVoiceState.getChannel().block();
                     assert voiceChannel != null;
-                    botVoiceConnection.disconnect().subscribe(ignored -> message.getChannel().subscribe(channel -> channel.createMessage("Disconnected from " + voiceChannel.getName())));
+                    botVoiceConnection.disconnect().subscribe(ignored ->
+                            message.getChannel().subscribe(channel -> channel.createMessage("Disconnected from " + voiceChannel.getName()).subscribe()));
                  })));
 
             } else {

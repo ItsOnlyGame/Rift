@@ -10,6 +10,8 @@ import com.sedmelluq.discord.lavaplayer.track.lyrics.LyricsManager;
 import discord4j.core.object.entity.Message;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Lyrics extends MusicCommand {
 
@@ -53,14 +55,55 @@ public class Lyrics extends MusicCommand {
             return;
         }
 
-        String messageContent =
-                "```" + "Lyrics for " + lyricsSearchWord + "\n\n" +
-                lyrics.getLyrics().trim() +
-                "\n\n" + lyrics.getUrl() +
-                "```";
+        List<String> parts = getParts(lyrics.getLyrics());
+
+        for (int i = 0; i < parts.size(); i++) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("```");
+            String part = parts.get(i);
+            if (i == 0) {
+                builder.append("Lyrics for ").append(lyricsSearchWord).append("\n\n");
+            }
+            builder.append(part);
+            if (i + 1 == parts.size()) {
+                builder.append("Lyrics URL: ").append(lyrics.getUrl());
+            }
+            builder.append("```");
+
+            message.getChannel().subscribe(channel -> channel.createMessage(builder.toString()).subscribe());
+        }
+    }
 
 
-        message.getChannel().subscribe(channel -> channel.createMessage(messageContent).subscribe());
+    private List<String> getParts(String lyricsString) {
+        int partitionSize = 2000;
+
+        List<String> parts = new ArrayList<>();
+
+        String[] array = lyricsString.split("\n\n");
+        if (array.length == 1)
+            array = lyricsString.split("\n");
+
+        StringBuilder temp = new StringBuilder();
+        int len = 0;
+
+        for (String str : array) {
+            len += str.length() + 4;
+
+            if (len >= partitionSize) {
+                parts.add(temp.toString());
+                temp = new StringBuilder();
+                temp.append(str);
+                len = 0;
+            } else {
+                temp.append(str).append("\n\n");
+            }
+        }
+        if (len != 0) {
+            parts.add(temp.toString());
+        }
+
+        return parts;
     }
 
 }

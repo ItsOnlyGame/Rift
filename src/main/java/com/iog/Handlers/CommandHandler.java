@@ -79,7 +79,7 @@ public class CommandHandler {
         BaseCommand command = getCommand(alias);
         if (command != null) {
             command.execute(message, arguments);
-            if (settings.isDeleteMessageAfterCommand()) {
+            if (settings.isAutoClean()) {
                 message.delete().subscribe();
             }
             return;

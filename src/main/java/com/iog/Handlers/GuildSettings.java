@@ -21,7 +21,7 @@ public class GuildSettings {
     private long dj_role = 0L;
     private int volume = 50;
 
-    private boolean deleteMessageAfterCommand = false;
+    private boolean autoClean = false;
 
     public GuildSettings(long id) {
         this.id = id;
@@ -77,12 +77,12 @@ public class GuildSettings {
         return this;
     }
 
-    public boolean isDeleteMessageAfterCommand() {
-        return deleteMessageAfterCommand;
+    public boolean isAutoClean() {
+        return autoClean;
     }
 
-    public GuildSettings setDeleteMessageAfterCommand(boolean deleteMessageAfterCommand) {
-        this.deleteMessageAfterCommand = deleteMessageAfterCommand;
+    public GuildSettings setAutoClean(boolean autoClean) {
+        this.autoClean = autoClean;
         return this;
     }
 
