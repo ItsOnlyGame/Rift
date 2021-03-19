@@ -30,21 +30,25 @@ public class Queue extends MusicCommand {
                 return;
             }
 
+            for (int times = 0; times < Math.ceil(queue.size() / 50f); times++) {
+                StringBuilder builder = new StringBuilder();
 
-            StringBuilder builder = new StringBuilder();
+                builder.append("```");
+                if (times == 0) {
+                    builder.append("Now playing: ").append(playing.getInfo().title).append(" ").append(Format.millisecondsToString(playing.getDuration())).append("\n");
+                }
 
-            builder.append("```");
-            builder.append("Now playing: ").append(playing.getInfo().title).append(" ").append(Format.millisecondsToString(playing.getDuration())).append("\n");
+                for (int i = times * 50; i < (times * 50) + 50; i++) {
+                    if (queue.size() <= i) break;
+                    AudioTrack t = queue.get(i);
+                    builder.append((i + 1)).append(": ").append(t.getInfo().title).append(" | ").append(Format.millisecondsToString(t.getDuration())).append("\n");
+                }
 
-            int i = 0;
-            for (AudioTrack t : queue.getList()) {
-                builder.append(i).append(": ").append(t.getInfo().title).append(" | ").append(Format.millisecondsToString(t.getDuration())).append("\n");
-                i++;
+                builder.append("```");
+                message.getChannel().subscribe(channel -> channel.createMessage(builder.toString()).subscribe());
             }
-            builder.append("```");
-
-            message.getChannel().subscribe(channel -> channel.createMessage(builder.toString()).subscribe());
         });
     }
 }
+
 

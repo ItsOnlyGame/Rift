@@ -1,5 +1,21 @@
 # Change Log
 
+## [1.1.0] | 19.3.2021
+### Added
+- New queue commands
+  - Clear Queue: Clears the whole queue
+  - Remove: Remove from queue
+  
+- Bot leaves voice channel if its left there alone
+
+### Changed
+- Default embed colors were changed
+
+### Fixed
+- Queue command now handles the char cap that discord has
+
+
+
 ## [1.0.0] | 17.3.2021
 ### Added
 - Added settings to manage guild
@@ -14,6 +30,7 @@
 ### Gradle Import
 - Lavaplayer Unofficial from 1.3.75 to 1.3.76
   - Fixes the spotify authentication bug
+
 
 
 ## [0.1.0 Alpha] | 17.3.2021

@@ -7,6 +7,8 @@ import discord4j.core.event.domain.VoiceStateUpdateEvent;
 import discord4j.core.event.domain.guild.MemberJoinEvent;
 import discord4j.core.object.VoiceState;
 
+import java.util.List;
+
 public class EventHandler {
 
     public static void VoiceStateUpdate(VoiceStateUpdateEvent event) {
@@ -24,6 +26,16 @@ public class EventHandler {
                         }
                         e.setUserLimit(channel.getUserLimit() - 1);
                     }).subscribe());
+                } else {
+                    event.getOld().orElseThrow().getChannel().subscribe(voiceChannel -> {
+                        List<VoiceState> voiceStates = voiceChannel.getVoiceStates().collectList().block();
+                        if (voiceStates == null) return;
+                        if (voiceStates.size() == 1) {
+                            if (voiceStates.get(0).getUserId().equals(Main.gateway.getSelfId())) {
+                                Main.gateway.getVoiceConnectionRegistry().getVoiceConnection(voiceChannel.getGuildId()).subscribe(voice -> voice.disconnect().subscribe());
+                            }
+                        }
+                    });
                 }
             }
 

@@ -14,6 +14,11 @@ public class TrackQueue {
         looping = false;
     }
 
+    public TrackQueue(TrackQueue queue) {
+        this.list.addAll(queue.getList());
+        looping = false;
+    }
+
     public void add(AudioTrack item) {
         list.add(item);
     }

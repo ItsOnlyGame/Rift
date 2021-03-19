@@ -18,8 +18,8 @@ public class Settings {
 
     public String CountryCode;
 
-    private final String NormalColorHex = String.format("#%02x%02x%02x", 130, 180, 160);
-    private final String ErrorColorHex = String.format("#%02x%02x%02x", 255, 100, 100);
+    private final String NormalColorHex = String.format("#%02x%02x%02x", 77, 192, 58);
+    private final String ErrorColorHex = String.format("#%02x%02x%02x", 188, 39, 39);
 
     public String getDiscordToken() {
         return DiscordToken;
