@@ -1,6 +1,12 @@
 # Change Log
 
-## [1.1.0] | 19.3.2021
+## [1.1.2] | 1.4.2021
+### Fixed
+- Lyric fetching works
+- Lavaplayer Unofficial fixed playback errors
+
+
+## [1.1.1] | 19.3.2021
 ### Added
 - New queue commands
   - Clear Queue: Clears the whole queue
