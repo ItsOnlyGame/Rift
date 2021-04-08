@@ -6,7 +6,7 @@ plugins {
 }
 
 ext.moduleName = 'Rift'
-version = '1.1.2'
+version = '1.1.3'
 
 
 shadowJar {
@@ -29,8 +29,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.iog:lavaplayer-unofficial:1.3.79'
-    implementation 'com.discord4j:discord4j-core:3.1.3'
+    implementation 'com.iog:lavaplayer-unofficial:1.3.80'
+    implementation 'com.discord4j:discord4j-core:3.1.5'
 
     //Json
     implementation 'com.google.code.gson:gson:2.8.6'

@@ -1,9 +1,17 @@
 # Change Log
 
+## [1.1.3] | 1.4.2021
+### Fixed
+- Lavaplayer Unofficial fixed playlist errors
+
+### Gradle imports
+- Updated Discord4J to 3.1.5 from 3.1.3
+
+
 ## [1.1.2] | 1.4.2021
 ### Fixed
 - Lyric fetching works
-- Lavaplayer Unofficial fixed playback errors
+- Lavaplayer Unofficial fixed playback errors (website cookies)
 
 
 ## [1.1.1] | 19.3.2021
