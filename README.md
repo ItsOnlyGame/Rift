@@ -16,34 +16,37 @@ This bot should work on Windows, Linux and Mac system
 ## Commands
 I'm just assuming the prefix is default: ``r!``
 
-### Voice Connection Commands
-#### Join
--  **Aliases:** ``join``, ``connect``, ``c``, ``j``
-- Joins a voice channel
-
-#### Leave
-- **Aliases:** ``leave``, ``disconnect``, ``dc``, ``dis``
-- Leaves the current voice channel
-
 ### Music Commands
-#### Clear Queue
-- **Aliases:** ``clearqueue``, ``clear``
-- Leaves the current voice channel
-
-#### Lyrics
-- **Aliases:** ``lyrics``
-- **Usage:** ``r!lyrics [song title]``. If no song title is give then it will get the lyrics for the current playing track
-- Finds lyrics to a song
-
-#### Pause
-- **Aliases:** ``pause``
-- Pauses the current track
-
 #### Play
 - **Aliases:** ``play``, ``p``
 - **Usage:** ``r!play [track url / search word]``
 - Searches tracks from Youtube, SoundCloud and Spotify
 - Play track
+
+#### Spotify
+- **Aliases:** ``spotify``, ``sp``
+- Searches tracks from spotify
+
+#### SoundCloud
+- **Aliases:** ``soundcloud``, ``sc``
+- Searches tracks from soundcloud
+
+#### Lyrics
+- **Aliases:** ``lyrics``
+- **Usage:** ``r!lyrics [song title]`` searches lyrics depending on the title given or just ``r!lyrics`` that will get the lyrics for the current playing track
+- Finds lyrics to a song
+
+#### Clear Queue
+- **Aliases:** ``clearqueue``, ``clear``
+- Leaves the current voice channel
+
+#### Resume
+- **Aliases:** ``resume``
+- Resumes the current track paused
+
+#### Pause
+- **Aliases:** ``pause``
+- Pauses the current track
 
 #### Track Info
 - **Aliases:** ``info``
@@ -58,20 +61,49 @@ I'm just assuming the prefix is default: ``r!``
 - **Usage:** ``r!remove [queue index]``. You can get the queue index with the queue command
 - Remove item from queue
 
-#### Resume
-- **Aliases:** ``resume``
-- Resumes the current track paused
+#### Stop
+- **Aliases:** ``stop``
+- Stops playing music and clears the queue
 
 #### Skip
 - **Aliases:** ``skip``, ``s``
 - **Usage:** ``r!skip [index]``. Amount of tracks to skip
 - Skip(s) track
 
-**NOT FINNISHED!**
+### Voice Connection Commands
+#### Join
+-  **Aliases:** ``join``, ``connect``, ``c``, ``j``
+- Joins a voice channel
+
+#### Leave
+- **Aliases:** ``leave``, ``disconnect``, ``dc``, ``dis``
+- Leaves the current voice channel
+
+### Settings
+#### Auto Clean
+- **Aliases:** ``autoclean``
+- If the setting is true, it will automatically delete the user-made command message
+
+#### Prefix
+- **Aliases:** ``prefix``
+- Change prefix
 
 
 ### Admin Commands
-**NOT FINNISHED!**
+#### Delete
+- **Aliases:** ``delete``, ``del``
+- **Usage:** ``r!delete [amount]`` deletes the give amount of messages. ``r!delete`` only deletes one message
+- Deletes messages
+
+
+### Other
+#### Bot Info
+- **Aliases:** ``botinfo``, ``bot``, ``this``
+- Gives some small information about the bot
+
+#### Help
+- **Aliases:** ``help``
+- Gives small information about commands
 
 
 ## License
