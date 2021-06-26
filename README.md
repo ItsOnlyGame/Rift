@@ -7,7 +7,7 @@ Because of the language change from Java to JavaScript the dependecies have chan
 Because Lavaplayer is no longer available, this bot will use lavalink which is a seperate server-side program that will have to be run beside Rift.
 
 ### Lavalink
-- You need to have Java JRE 13 installed on your machine ([Here's a donwload link](https://adoptopenjdk.net/archive.html?variant=openjdk13))
+- You need to have Java JRE 13 installed on your machine ([Here's a download link](https://adoptopenjdk.net/archive.html?variant=openjdk13))
 - You can download the latest Lavalink release [here](https://github.com/freyacodes/Lavalink/releases)
 - Create a file named ``application.yml`` and put it in the same folder as lavalink. 
 Add [this](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/application.yml.example) to the file and modify the required things

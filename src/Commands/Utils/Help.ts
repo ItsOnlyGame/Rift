@@ -15,7 +15,7 @@ export default {
             "```"+
             "Help \n"+
             "Every command is listen under this link: "+
-            "https://github.com/ItsOnlyGame/Rift#readme"+
+            "https://github.com/ItsOnlyGame/Rift#commands"+
             "````"
         message.channel.send(str)
     },
