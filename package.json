@@ -1,0 +1,29 @@
+{
+    "name": "rift",
+    "version": "1.0.0",
+    "description": "",
+    "main": "./src/index.ts",
+    "scripts": {
+        "start": "ts-node ./src/index.ts",
+        "nodemon": "nodemon --watch ./src/ ./src/index.ts",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@discordjs/opus": "^0.5.3",
+        "@kaname-png/erela.js-spotify": "^1.0.2",
+        "discord.js": "^12.5.3",
+        "erela.js": "^2.3.3",
+        "lyrics-finder": "^21.7.0",
+        "moment": "^2.29.1",
+        "moment-duration-format": "^2.3.2",
+        "ts-node": "^10.0.0",
+        "typescript": "^4.3.4"
+    },
+    "devDependencies": {
+        "@types/moment-duration-format": "^2.2.2",
+        "@types/node": "^15.12.4",
+        "@types/spotify-web-api-node": "^5.0.2"
+    }
+}

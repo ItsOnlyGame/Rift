@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.0.0] | 26.6.2021
+### Major changes
+- Swiched from java to typescript
+- Dependency changes (Lavalink)
+
+
 ## [1.1.3] | 1.4.2021
 ### Fixed
 - Lavaplayer Unofficial fixed playlist errors

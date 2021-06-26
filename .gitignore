@@ -1,7 +1,2 @@
-/GlobalSettings.json
-/logs/
-/.gradle/
-/.idea/
-/build/
-/guilds/
-/gradle.properties
+node_modules
+config

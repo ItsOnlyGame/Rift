@@ -1,0 +1,19 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "sourceMap": true,
+        "target": "es5",
+        "experimentalDecorators": true,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "esModuleInterop": true,
+        "resolveJsonModule": true
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "filesGlob": [
+        "src/**/*.ts",
+    ],
+    "baseUrl": "./",
+}
