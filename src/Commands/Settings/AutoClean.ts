@@ -12,24 +12,27 @@ export default {
      * @param {Array<string>} args
      */
     execute: async function(message: Message, args: Array<string>) {
-        const guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
+        var guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
 
         if (args.length == 0) {
             message.channel.send("Current Auto Clean mode is ``"+guildSettings.autoclean+"``")
             return
         }
 
-        const newAutoClean = args[0].trim().toLowerCase();
+        var newAutoClean = args[0].trim().toLowerCase();
         if (newAutoClean == "true") {
             message.channel.send("Auto Clean mode set to ``"+newAutoClean+"``")
-            guildSettings.autoclean = Boolean(newAutoClean);
+            guildSettings.autoclean = true
             guildSettings.save()
+            return;
 
         } else if (newAutoClean == "false") {
 
             message.channel.send("Auto Clean mode set to ``"+newAutoClean+"``")
-            guildSettings.autoclean = Boolean(newAutoClean);
+            guildSettings.autoclean = false
             guildSettings.save()
+            return;
+
         }
 
         message.channel.send("Auto clean can only be set to true or false")

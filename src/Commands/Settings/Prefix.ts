@@ -12,15 +12,16 @@ export default {
      * @param {Array<string>} args
      */
     execute: async function(message: Message, args: Array<string>) {
-        const guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
+        var guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
 
         if (args.length == 0) {
             message.channel.send("Current prefix is ``"+guildSettings.prefix+"``")
             return
         }
 
-        const newprefix = args[0].trim();
+        var newprefix = args[0].trim();
         message.channel.send("Prefix changed from ``"+guildSettings.prefix+"`` to ``"+newprefix+"``")
+        console.log(newprefix)
         guildSettings.prefix = newprefix;
         guildSettings.save()
     },

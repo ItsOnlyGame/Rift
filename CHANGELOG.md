@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.1.1] | 27.6.2021
+### Added
+- Delete command is now able to delete more than 100 messages (discord limit)
+
+## Fixed
+- Changing settings didn't save or corrupted the file
+
 
 ## [2.1.0] | 27.6.2021
 ### Added

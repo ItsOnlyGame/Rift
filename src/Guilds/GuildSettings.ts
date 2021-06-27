@@ -40,9 +40,10 @@ export default class GuildSettings {
     static getGuildSettings(id: Snowflake, client: Client): GuildSettings {
         var settings: GuildSettings;
         try {
-            var file = fs.readFileSync(`./config/guilds/${id}.json`, 'utf8');
+            var file = fs.readFileSync(`./config/guilds/${id}.json`, 'utf-8');
             settings = JSON.parse(file);
         } catch (err) {
+            console.log(err)
             settings = new GuildSettings(id, client)
             GuildSettings.saveGuildSettings(settings);
         }
@@ -61,7 +62,7 @@ export default class GuildSettings {
             fs.mkdirSync(`./config/guilds`)
         }
 
-        fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf8', (err) => {
+        fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf-8', (err) => {
             if (err) {
                 console.log(`Error writing file: ${err}`);
             } else {

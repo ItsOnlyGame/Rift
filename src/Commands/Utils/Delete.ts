@@ -20,7 +20,14 @@ export default {
                 return;
             }
         }
+        deleteAmount += 1;
+        const times = Math.floor(deleteAmount / 100);
 
-        (message.channel as TextChannel).bulkDelete(deleteAmount + 1)
+        for (var i = 0; i < times; i++) {
+            (message.channel as TextChannel).bulkDelete(100)
+        }
+
+        deleteAmount -= times * 100;
+        (message.channel as TextChannel).bulkDelete(deleteAmount);
     },
 };

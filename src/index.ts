@@ -45,7 +45,7 @@ client.on('message', async message => {
     if (!message.guild) return;
     if (!message.member) return;
 
-    const guild = GuildSettings.getGuildSettings(message.guild.id, client);
+    var guild = GuildSettings.getGuildSettings(message.guild.id, client);
     if (!message.content.startsWith(guild.prefix)) return;
 
     const args = message.content.slice(guild.prefix.length).split(/ +/);
@@ -75,8 +75,9 @@ client.on('message', async message => {
         message.channel.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
         console.error(error);
     }
-    
-    if (GuildSettings.getGuildSettings(message.guild.id, message.client).autoclean) {
+
+    guild = GuildSettings.getGuildSettings(message.guild.id, message.client);
+    if (guild.autoclean) {
         if (command.name != "Delete")
             message.delete();
     }
