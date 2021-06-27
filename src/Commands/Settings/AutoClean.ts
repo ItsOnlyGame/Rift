@@ -32,6 +32,6 @@ export default {
             guildSettings.save()
         }
 
-        throw "Auto clean can only be set to true or false"
+        message.channel.send("Auto clean can only be set to true or false")
     },
 };

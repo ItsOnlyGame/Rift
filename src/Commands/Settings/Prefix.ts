@@ -12,7 +12,7 @@ export default {
      * @param {Array<string>} args
      */
     execute: async function(message: Message, args: Array<string>) {
-        const guildSettings = await GuildSettings.getGuildSettings(message.guild.id, message.client)
+        const guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
 
         if (args.length == 0) {
             message.channel.send("Current prefix is ``"+guildSettings.prefix+"``")

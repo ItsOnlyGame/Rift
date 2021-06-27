@@ -1,5 +1,13 @@
 # Change Log
 
+## [2.0.1] | 27.6.2021
+### Added
+- If error is thrown refer user to github
+
+### Changed
+- Small code modifications
+
+
 ## [2.0.0] | 26.6.2021
 ### Major changes
 - Swiched from java to typescript

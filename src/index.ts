@@ -45,7 +45,7 @@ client.on('message', async message => {
     if (!message.guild) return;
     if (!message.member) return;
 
-    const guild = await GuildSettings.getGuildSettings(message.guild.id, client);
+    const guild = GuildSettings.getGuildSettings(message.guild.id, client);
     if (!message.content.startsWith(guild.prefix)) return;
 
     const args = message.content.slice(guild.prefix.length).split(/ +/);
@@ -70,8 +70,10 @@ client.on('message', async message => {
     try {
         await command.execute(message, args);
     } catch (error) {
-        console.error(error);
         message.channel.send('There was an error trying to execute that command!');
+        message.channel.send(error)
+        message.channel.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
+        console.error(error);
     }
     
     if (GuildSettings.getGuildSettings(message.guild.id, message.client).autoclean) {

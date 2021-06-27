@@ -45,6 +45,6 @@ export default {
             return;
         }
 
-        message.channel.send(`Volume is ${guildSettings.volume}`)
+        message.channel.send(`Volume is \`\`${guildSettings.volume}\`\``)
     },
 };
