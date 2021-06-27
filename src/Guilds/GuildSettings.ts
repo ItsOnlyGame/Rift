@@ -57,8 +57,8 @@ export default class GuildSettings {
      * @param {GuildSettings} settings 
      */
     static saveGuildSettings(settings: GuildSettings) {
-        if (!fs.existsSync(`./config`)){
-            fs.mkdirSync(`./config`)
+        if (!fs.existsSync(`./config/guilds`)){
+            fs.mkdirSync(`./config/guilds`)
         }
 
         fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf8', (err) => {
