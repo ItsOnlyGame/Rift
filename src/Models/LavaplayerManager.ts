@@ -6,7 +6,7 @@ import getConfig from "../Config";
 
 // Define some options for the node
 const nodes = [{
-    host: "localhost",
+    host: "192.168.8.140",
     password: "youshallnotpass",
     port: 2333,
 }];

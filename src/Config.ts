@@ -37,7 +37,6 @@ export default function getConfig(): ConfigInterface {
     var config = JSON.parse(fs.readFileSync('./config/config.json', 'utf-8'));
 
     for (var c in defaultConfig) {
-        console.log(config[c])
         if (config[c] == undefined) {
             config[c] = null;
             fs.writeFileSync('./config/config.json', JSON.stringify(config))

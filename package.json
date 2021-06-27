@@ -1,15 +1,15 @@
 {
     "name": "rift",
-    "version": "1.0.0",
-    "description": "",
+    "version": "2.1.0",
+    "description": "This is a discord bot mainly for playing music",
     "main": "./src/index.ts",
     "scripts": {
         "start": "ts-node ./src/index.ts",
         "nodemon": "nodemon --watch ./src/ ./src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "author": "",
-    "license": "ISC",
+    "author": "ItsOnlyGame",
+    "license": "GPL-3.0",
     "dependencies": {
         "@discordjs/opus": "^0.5.3",
         "discord.js": "^12.5.3",
@@ -23,7 +23,6 @@
     },
     "devDependencies": {
         "@types/moment-duration-format": "^2.2.2",
-        "@types/node": "^15.12.4",
-        "@types/spotify-web-api-node": "^5.0.2"
+        "@types/node": "^15.12.4"
     }
 }

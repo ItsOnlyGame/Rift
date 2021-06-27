@@ -8,6 +8,7 @@
 
 ## Fixed
 - Fixed a bug in queue command
+- Guilds config directory will be created if it doesn't exist
 
 ### Changed
 - Small code modifications

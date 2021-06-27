@@ -44,7 +44,7 @@ export default class GuildSettings {
             settings = JSON.parse(file);
         } catch (err) {
             settings = new GuildSettings(id, client)
-            this.saveGuildSettings(settings);
+            GuildSettings.saveGuildSettings(settings);
         }
 
         Object.setPrototypeOf(settings, GuildSettings.prototype)
@@ -57,6 +57,10 @@ export default class GuildSettings {
      * @param {GuildSettings} settings 
      */
     static saveGuildSettings(settings: GuildSettings) {
+        if (!fs.existsSync(`./config`)){
+            fs.mkdirSync(`./config`)
+        }
+
         fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf8', (err) => {
             if (err) {
                 console.log(`Error writing file: ${err}`);
