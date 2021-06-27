@@ -1,11 +1,17 @@
 # Change Log
 
-## [2.0.1] | 27.6.2021
+
+## [2.1.0] | 27.6.2021
 ### Added
 - If error is thrown refer user to github
+- Checking config.json file for missing variables
+
+## Fixed
+- Fixed a bug in queue command
 
 ### Changed
 - Small code modifications
+- Swiched spotify plugin for erela.js ( SpotifyAPI credentials required )
 
 
 ## [2.0.0] | 26.6.2021

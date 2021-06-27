@@ -28,7 +28,7 @@ export default {
             return;
         }
 
-        for (var times = 0; times < Math.ceil(player.queue.length + 1 / 50.0); times++) {
+        for (var times = 0; times < Math.ceil(player.queue.length / 50.0); times++) {
             var queueMessage = ""
 
             queueMessage += "```";
