@@ -1,5 +1,11 @@
 # Change Log
 
+## [2.2.1] | 3.7.2021
+## Fixed
+- Interaction replies weren't handeled correctly
+- SlashCommandInit send interactions too quick and resulted in a 429 error (Too many requests)
+
+
 ## [2.2.0] | 3.7.2021
 ### Added
 - Delete command is now able to delete more than 100 messages (discord limit)

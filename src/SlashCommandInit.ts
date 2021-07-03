@@ -38,11 +38,12 @@ async function run() {
 
     var i = 0
     for (var temp of commands) {
-        var delayTime = 1000;
+        var delayTime = 5000;
         await interactionsClient.createCommand(temp.getInteraction()).catch((err) => {
             if (err.response.data.message == 'You are being rate limited.') {
                 delayTime += err.response.data.retry_after;
             }
+            console.error(`Error occurred: ${err.response.data.message}`)
         })
         await delay(delayTime);
         i++;

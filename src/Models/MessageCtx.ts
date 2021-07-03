@@ -1,35 +1,41 @@
-import { APIMessageContentResolvable, Channel, GuildMember, Message, MessageAdditions, MessageOptions, TextChannel } from "discord.js";
+import { APIMessageContentResolvable, Channel, Client, GuildMember, Message, MessageAdditions, MessageEmbed, MessageOptions, TextChannel } from "discord.js";
 
 export default class MessageCtx {
 
+    public args: string[];
     public channel: TextChannel;
     public member: GuildMember;
-    public args: string[];
+    public interactionData: any;
 
-    constructor(args: string[], message?: Message, channel?: Channel, member?: GuildMember) {
+    constructor(args: string[], channel: Channel, member: GuildMember, interactionData?: any) {
         this.args = args;
-        
-        if (message) {
-            this.channel = message.channel as TextChannel;
-            this.member = message.member;
-            return;
-        }
 
-        if (channel) {
-            if (channel.type != "text")
-                throw "Channel is not a text channel"
-
-            if (member == undefined)
-                throw "Member cannot be undefined"
-            
-            this.channel = channel as TextChannel
-            this.member = member;
-            return;
-        }
-
+        this.channel = channel as TextChannel
+        this.member = member;
+        this.interactionData = interactionData;
     }
 
-    async send(content: APIMessageContentResolvable | (MessageOptions & {split?: false;}) | MessageAdditions): Promise<Message> {
+    async send(content: APIMessageContentResolvable | (MessageOptions & {split?: false;}) | MessageAdditions): Promise<Message|any> {
+        if (this.interactionData) {
+            if (content instanceof MessageEmbed) {
+                // @ts-ignore
+                return this.channel.client.api.interactions(this.interactionData.id, this.interactionData.token).callback.post({data: {
+                    type: 4,
+                    data: {
+                        embeds: [content.toJSON()]
+                    }
+                }})
+             } else {
+                // @ts-ignore
+                return this.channel.client.api.interactions(this.interactionData.id, this.interactionData.token).callback.post({data: {
+                    type: 4,
+                    data: {
+                        content: content
+                    }
+                }})
+            }
+        }
+
         return this.channel.send(content)
     }
 

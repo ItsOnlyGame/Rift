@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Channel, Client, GuildMember } from "discord.js";
+import { Channel, Client, GuildMember, MessageEmbed } from "discord.js";
 import GuildSettings from './Guilds/GuildSettings';
 import { ErelaManager, initErela } from './Models/LavaplayerManager';
 import getConfig from './Config';
@@ -70,7 +70,7 @@ client.on('message', async message => {
     }
 
     try {
-        await command.execute(new MessageCtx(args, message));
+        await command.execute(new MessageCtx(args, message.channel, message.member));
     } catch (error) {
         message.channel.send('There was an error trying to execute that command!');
         message.channel.send(error)
@@ -97,7 +97,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
     const channel: Channel = client.channels.cache.get(interaction.channel_id);
     const member: GuildMember = client.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id)
     
-    const ctx = new MessageCtx(args, undefined, channel, member)
+    const ctx = new MessageCtx(args, channel, member, interaction)
 
     console.log(ctx.member)
     console.log(ctx.channel)
@@ -126,7 +126,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
         ctx.send(error)
         ctx.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
         console.error(error);
-    }    
+    }
 })
 
 client.on("raw", d => ErelaManager.updateVoiceState(d));
