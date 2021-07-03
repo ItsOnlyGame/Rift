@@ -20,7 +20,11 @@ Add [this](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/app
 - On the first run Rift should just create a config file and close, change token in the config and run it again
 - Default prefix for the bot is ```r!```
 
+# Slash Commands
+If you want to use slash commands, just give the bot permissions in the discord developer portal
+https://discord.com/developers/docs/interactions/slash-commands
 
+When you're done with the bot permissions, open the directory in terminal ``npm run loadSlashCommands``
 
 # Commands
 I'm just assuming the prefix is default: ``r!``
