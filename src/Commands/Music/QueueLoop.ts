@@ -4,12 +4,12 @@ import Command from "../../Models/Command";
 import { ErelaManager } from "../../Models/LavaplayerManager";
 import MessageCtx from "../../Models/MessageCtx";
 
-export default class Resume extends Command {
+export default class QueueLoop extends Command {
     constructor() {
         super(
-            "Resume", 
-            "Resumes track playback",
-            ["resume", "res", "r"],
+            "Queue Loop", 
+            "Loop current current queue",
+            ["queueloop", "ql"],
             null
         )
     }
@@ -24,8 +24,7 @@ export default class Resume extends Command {
             }
         }
 
-        const player = ErelaManager.get(ctx.channel.guild.id);
-
+        const player = ErelaManager.get(ctx.channel.guild.id)   
         if (player == undefined) {
             ctx.send("Nothing is currenly playing");
             return;
@@ -41,19 +40,21 @@ export default class Resume extends Command {
             return;
         }
 
-        if (player.paused) {
-            player.pause(false);
+        
+        if (player.trackRepeat) {
+            player.setQueueRepeat(false)
+            ctx.send("Not looping queue")
 
         } else {
-            ctx.send("Track is already playing!")
+            player.setQueueRepeat(true)
+            ctx.send("Looping queue")
         }
     }
 
     public getInteraction() {
         return {
-            "name": "resume",
-            "description": "Resumes track playback"
+            "name": "queueloop",
+            "description": "Loop current current queue"
         }
     }
-    
 }

@@ -44,6 +44,11 @@ function initErela(client: Client) {
         console.log(`Node "${node.options.identifier}" encountered an error: ${error.message}.`)
     })
 
+    ErelaManager.on("socketClosed", (player, payload) => {
+        player.disconnect();
+        player.destroy();
+    })
+
     ErelaManager.on("trackError", (player, track, payload) => {
         const channel = client.channels.cache.get(player.textChannel);
         (channel as TextChannel).send(payload.error);

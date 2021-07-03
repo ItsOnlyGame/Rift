@@ -1,11 +1,23 @@
 # Change Log
 
-## [2.1.1] | 27.6.2021
+## [2.2.0] | 3.7.2021
 ### Added
 - Delete command is now able to delete more than 100 messages (discord limit)
+- Queue looping and track looping - more info in README.md
+- New Guild Settings: Notify Voice Connection - more info in README.md
+- Added support for Slash Commands, ``npm run loadSlashCommands`` to activate them
+
+### Changed
+- Pausing a track will now send a message of what its doing to the text channel 
+- Changed the visuals of help command to be an embed
+- Every command is now contained in a class
+- MessageCtx to replace commands execute arguments
 
 ## Fixed
 - Changing settings didn't save or corrupted the file
+- Lavalink would timeout node connection and disconnect from voice channel, while thinking it was still connected to a voice channel 
+- Help command had a typo
+- Anyone could change the guild settings
 
 
 ## [2.1.0] | 27.6.2021

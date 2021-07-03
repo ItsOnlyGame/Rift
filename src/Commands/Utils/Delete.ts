@@ -1,22 +1,23 @@
 import { Message, TextChannel } from "discord.js";
+import Command from "../../Models/Command";
+import MessageCtx from "../../Models/MessageCtx";
 
-export default {
-    name: "Delete",
-    description: "Delete an amount of messages",
-    aliases: ["delete", "del"],
-    permissionReq: null,
-    /**
-     * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
-     */
-    execute: async function(message: Message, args: Array<string>) {
+export default class BotInfo extends Command {
+    constructor() {
+        super(
+            "Delete",
+            "Delete an amount of messages",
+            ["delete", "del"],
+            null
+        )
+    }
 
+    public async execute(ctx: MessageCtx): Promise<void> {
         var deleteAmount = 1;
-        if (args.length >= 1) {
-            deleteAmount = Number(args[0]);
+        if (ctx.args.length >= 1) {
+            deleteAmount = Number(ctx.args[0]);
             if (isNaN(deleteAmount)) {
-                message.channel.send(`Not a valid amount to delete: ${args[0]}`)
+                ctx.send(`Not a valid amount to delete: ${ctx.args[0]}`)
                 return;
             }
         }
@@ -24,10 +25,27 @@ export default {
         const times = Math.floor(deleteAmount / 100);
 
         for (var i = 0; i < times; i++) {
-            (message.channel as TextChannel).bulkDelete(100)
+            ctx.channel.bulkDelete(100)
         }
 
         deleteAmount -= times * 100;
-        (message.channel as TextChannel).bulkDelete(deleteAmount);
-    },
-};
+        ctx.channel.bulkDelete(deleteAmount);
+    }
+
+    public getInteraction() {
+        return {
+            "name": "delete",
+            "description": "Delete messages",
+            "options": [
+                {
+                    "type": 4,
+                    "name": "amount",
+                    "description": "Amount of messages to delete, 1 if this argument isn't given",
+                    "required": false
+                }
+            ]
+        }
+
+    }
+
+}

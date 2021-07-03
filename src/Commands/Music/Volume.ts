@@ -1,39 +1,42 @@
 import { Message } from 'discord.js'
 import GuildSettings from '../../Guilds/GuildSettings';
+import Command from '../../Models/Command';
 import { ErelaManager } from '../../Models/LavaplayerManager';
+import MessageCtx from '../../Models/MessageCtx';
 
-export default {
-    name: "Volume",
-    description: "Change volume",
-    aliases: ["volume", "vol", "v"],
-    permissionReq: null,
-    /**
-     * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
-     */
-    execute: async function(message: Message, args: Array<string>) {
-        const guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
+export default class Volume extends Command {
+    constructor() {
+        super(
+            "Volume",
+            "Change volume",
+            ["volume", "vol", "v"],
+            null
+        )
+    }
+
+    public async execute(ctx: MessageCtx): Promise<void> {
+        const guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
 
         if (guildSettings.dj_role != null) {
-            if (message.member.roles.cache.get(guildSettings.dj_role) == undefined) {
-                return message.channel.send("You are not a dj")
+            if (ctx.member.roles.cache.get(guildSettings.dj_role) == undefined) {
+                ctx.send("You are not a dj")
+                return
             }
         }
 
-        const player = ErelaManager.get(message.guild.id);
+        const player = ErelaManager.get(ctx.channel.guild.id);
 
-        if (args.length >= 1) {
-            var newvolume = Number(args[0]);
+        if (ctx.args.length >= 1) {
+            var newvolume = Number(ctx.args[0]);
             if (isNaN(newvolume)) {
-                message.channel.send(`Not a valid volume: ${args[0]}`)
+                ctx.send(`Not a valid volume: ${ctx.args[0]}`)
                 return;
             }
 
             if (player != undefined) {
                 player.setVolume(newvolume)
-                if (player.voiceChannel != message.member.voice.channel.id) {
-                    message.channel.send("You need to be in the same voice channel as I")
+                if (player.voiceChannel != ctx.member.voice.channel.id) {
+                    ctx.send("You need to be in the same voice channel as I")
                     return;
                 }
             }
@@ -41,10 +44,27 @@ export default {
             guildSettings.volume = newvolume;
             guildSettings.save();
 
-            message.channel.send(`Volume set to ${newvolume}`)
+            ctx.send(`Volume set to ${newvolume}`)
             return;
         }
 
-        message.channel.send(`Volume is \`\`${guildSettings.volume}\`\``)
-    },
-};
+        ctx.send(`Volume is \`\`${guildSettings.volume}\`\``)
+    }
+
+    public getInteraction() {
+        return {
+            "name": "volume",
+            "description": "Change volume",
+            "options": [
+                {
+                    "type": 4,
+                    "name": "new_volume",
+                    "description": "New volume",
+                    "required": false
+                }
+            ]
+        }
+
+    }
+
+}

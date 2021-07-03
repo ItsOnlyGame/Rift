@@ -8,12 +8,13 @@ export default class GuildSettings {
      * @param {Client} client 
      */
 
-    public name: string
-    public id: Snowflake
-    public prefix: string
-    public dj_role: string
-    public volume: number
-    public autoclean: boolean
+    public name: string;
+    public id: Snowflake;
+    public prefix: string;
+    public dj_role: string;
+    public volume: number;
+    public autoclean: boolean;
+    public notifyVoiceConnection: boolean;
 
     constructor(id: Snowflake, client: Client) {
         const guild = client.guilds.cache.get(id);
@@ -25,6 +26,7 @@ export default class GuildSettings {
         this.dj_role = null;
         this.volume = 50;
         this.autoclean = true;
+        this.notifyVoiceConnection = false;
     }
 
     save() {

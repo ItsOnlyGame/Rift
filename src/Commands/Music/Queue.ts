@@ -1,30 +1,32 @@
 import { Message } from "discord.js";
+import Command from "../../Models/Command";
 import { ErelaManager } from "../../Models/LavaplayerManager";
+import MessageCtx from "../../Models/MessageCtx";
 
 var moment = require("moment");
 var momentDurationFormatSetup = require("moment-duration-format");
 momentDurationFormatSetup(moment);
 
-export default {
-    name: "Queue",
-    description: "Get queue",
-    aliases: ["queue", "q"],
-    permissionReq: null,
-    /**
-     * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
-     */
-    execute: async function(message: Message, args: Array<string>) {
-        const player = ErelaManager.get(message.guild.id);
+export default class Queue extends Command {
+    constructor() {
+        super(
+            "Queue", 
+            "Get queue",
+            ["queue", "q"],
+            null
+        )
+    }
+
+    public async execute(ctx: MessageCtx): Promise<void> {
+        const player = ErelaManager.get(ctx.channel.guild.id);
 
         if (player == undefined) {
-            message.channel.send("Queue is empty!");
+            ctx.send("Queue is empty!");
             return;
         }
 
         if (player.queue.length == 0 && player.queue.current == undefined) {
-            message.channel.send("Queue is empty!");
+            ctx.send("Queue is empty!");
             return;
         }
 
@@ -43,7 +45,14 @@ export default {
             }
 
             queueMessage += "```";
-            message.channel.send(queueMessage)
+            ctx.send(queueMessage)
         }
-    },
-};
+    }
+
+    public getInteraction() {
+        return {
+            "name": "queue",
+            "description": "Get queue"
+        }
+    }
+}

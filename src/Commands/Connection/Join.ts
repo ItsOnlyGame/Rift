@@ -1,29 +1,41 @@
-import { Message } from "discord.js";
+import GuildSettings from "../../Guilds/GuildSettings";
+import Command from "../../Models/Command";
 import { ErelaManager } from "../../Models/LavaplayerManager";
+import MessageCtx from "../../Models/MessageCtx";
 
-export default {
-    name: "Join",
-    description: "Join the voice channel",
-    aliases: ["join", "connect", "c"],
-    permissionReq: null,
-    /**
-     * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
-     */
-    execute: async function(message: Message, args: Array<string>) {
-        if (!ErelaManager.get(message.guild.id)) {
+export default class Join extends Command {
+    constructor() {
+        super(
+            "Join", 
+            "Join the voice channel",
+            ["join", "connect", "c"],
+            null
+        )
+    }
+
+    public execute(ctx: MessageCtx): void {
+        var guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
+
+        if (!ErelaManager.get(ctx.channel.guild.id)) {
             const player = ErelaManager.create({
-                guild: message.guild.id,
-                voiceChannel: message.member.voice.channel.id,
-                textChannel: message.channel.id,
+                guild: ctx.channel.guild.id,
+                voiceChannel: ctx.member.voice.channel.id,
+                textChannel: ctx.channel.id,
             });
 
             player.connect();
-            message.channel.send(`Connecting to ${message.member.voice.channel.name}`)
+            if (guildSettings.notifyVoiceConnection)
+                ctx.send(`Connecting to ${ctx.member.voice.channel.name}`)
 
         } else {
-            message.channel.send(`Already connected to a voice channel`)
+            ctx.send(`Already connected to a voice channel`)
         }
-    },
-};
+    }
+
+    public getInteraction() {
+        return {
+            "name": "join",
+            "description": "Join the voice channel"
+        }
+    }
+}

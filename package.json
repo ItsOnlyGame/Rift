@@ -1,10 +1,11 @@
 {
     "name": "rift",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "This is a discord bot mainly for playing music",
     "main": "./src/index.ts",
     "scripts": {
         "start": "ts-node ./src/index.ts",
+        "loadSlashCommands": "ts-node ./src/SlashCommandInit.ts",
         "nodemon": "nodemon --watch ./src/ ./src/index.ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
@@ -12,6 +13,7 @@
     "license": "GPL-3.0",
     "dependencies": {
         "@discordjs/opus": "^0.5.3",
+        "discord-slash-commands-client": "^1.2.1",
         "discord.js": "^12.5.3",
         "erela.js": "^2.3.3",
         "erela.js-spotify": "^1.2.0",

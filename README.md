@@ -72,6 +72,16 @@ I'm just assuming the prefix is default: ``r!``
 - **Usage:** ``r!skip [index]``. Amount of tracks to skip
 - Skip(s) track
 
+### Loop
+- **Aliases:** ``loop``, ``l``
+- **Usage:** ``r!loop``
+- Loops the currently playing track
+
+### Queue Loop
+- **Aliases:** ``queueloop``, ``ql``
+- **Usage:** ``r!queueloop``
+- Repeats queue
+
 
 ## Voice Connection Commands
 ### Join
@@ -91,6 +101,10 @@ I'm just assuming the prefix is default: ``r!``
 ### Prefix
 - **Aliases:** ``prefix``
 - Change prefix
+
+### Notify Voice Connection
+- **Aliases:** ``notifyvc``
+- Whether to tell if bot is (dis)connecting from/to a voice channel
 
 
 ## Admin Commands

@@ -1,46 +1,57 @@
 import { Message } from "discord.js";
 import GuildSettings from "../../Guilds/GuildSettings";
+import Command from "../../Models/Command";
 import { ErelaManager } from "../../Models/LavaplayerManager";
+import MessageCtx from "../../Models/MessageCtx";
 
-export default {
-    name: "Stop",
-    description: "Stop playback",
-    aliases: ["stop"],
-    permissionReq: null,
-    /**
-     * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
-     */
-    execute: async function(message: Message, args: Array<string>) {
-        const guildSettings = GuildSettings.getGuildSettings(message.guild.id, message.client)
+export default class Stop extends Command {
+    constructor() {
+        super(
+            "Stop",
+            "Stop playback",
+            ["stop"],
+            null
+        )
+    }
+
+    public async execute(ctx: MessageCtx): Promise<void> {
+        const guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
 
         if (guildSettings.dj_role != null) {
-            if (message.member.roles.cache.get(guildSettings.dj_role) == undefined) {
-                return message.channel.send("You are not a dj")
+            if (ctx.member.roles.cache.get(guildSettings.dj_role) == undefined) {
+                ctx.send("You are not a dj")
+                return 
             }
         }
         
-        const player = ErelaManager.get(message.guild.id);
+        const player = ErelaManager.get(ctx.channel.guild.id);
 
         if (player == undefined) {
-            message.channel.send("Queue is empty!");
+            ctx.send("Queue is empty!");
             return;
         }
 
         if (player.queue.length == 0 && player.queue.current == undefined) {
-            message.channel.send("Queue is empty!");
+            ctx.send("Queue is empty!");
             return;
         }
 
-        if (player.voiceChannel != message.member.voice.channel.id) {
-            message.channel.send("You need to be in the same voice channel as I")
+        if (player.voiceChannel != ctx.member.voice.channel.id) {
+            ctx.send("You need to be in the same voice channel as I")
             return;
         }
 
         player.disconnect();
         player.destroy();
 
-        message.channel.send("Queue cleared and playback stopped!");
-    },
-};
+        ctx.send("Queue cleared and playback stopped!");
+    }
+
+    public getInteraction() {
+        return {
+            "name": "stop",
+            "description": "Stop playback"
+        }
+    }
+
+}

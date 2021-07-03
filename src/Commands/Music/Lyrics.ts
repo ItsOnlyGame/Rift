@@ -1,44 +1,45 @@
 import { Message } from "discord.js";
 import { ErelaManager } from "../../Models/LavaplayerManager";
 import lyricsFinder from 'lyrics-finder';
+import Command from "../../Models/Command";
+import MessageCtx from "../../Models/MessageCtx";
 
-export default {
-    name: "Lyrics",
-    description: "Fetches lyrics from google",
-    aliases: ["lyrics"],
-    permissionReq: null,
-    
-    /**
-     * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
-     */
-    execute: async function(message: Message, args: Array<string>) { 
-        const player = ErelaManager.get(message.guild.id)   
+export default class Lyrics extends Command {
+    constructor() {
+        super(
+            "Lyrics", 
+            "Fetches track lyrics from google",
+            ["lyrics"],
+            null
+        )
+    }
+
+    public async execute(ctx: MessageCtx): Promise<void> {
+        const player = ErelaManager.get(ctx.channel.guild.id)   
         if (player == undefined) {
-            if (args.length == 0) {
-                message.channel.send("No search query given nor was nothing is playing!");
+            if (ctx.args.length == 0) {
+                ctx.send("No search query given nor was nothing is playing!");
                 return;
             }
 
-            const lyrics: string = await lyricsFinder(args.join("").trim()) || 'No lyrics found!'
-            var splits = splitLyrics(lyrics)
+            const lyrics: string = await lyricsFinder(ctx.args.join("").trim()) || 'No lyrics found!'
+            var splits = this.splitLyrics(lyrics)
             for (var i = 0; i < splits.length; i++) {
                 var text = "```";
                 if (i == 0) {
-                    text += "\nLyrics for "+ args.join("").trim() + "\n\n";
+                    text += "\nLyrics for "+ ctx.args.join("").trim() + "\n\n";
                 } else {
                     text += "\n"
                 }
                 text += splits[i] + "```"
-                message.channel.send(text)
+                ctx.send(text)
             }
 
             return;
         }
 
         if (player.queue.length == 0 && player.queue.current == undefined) {
-            message.channel.send("Nothing is playing!");
+            ctx.send("Nothing is playing!");
             return;
         }
         
@@ -46,7 +47,7 @@ export default {
         const trackTitle = `${player.queue.current.title}`;
         const lyrics: string = await lyricsFinder(trackTitle) || 'No lyrics found!'
 
-        var splits = splitLyrics(lyrics)
+        var splits = this.splitLyrics(lyrics)
         for (var i = 0; i < splits.length; i++) {
             var text = "```";
             if (i == 0) {
@@ -55,37 +56,54 @@ export default {
                 text += "\n"
             }
             text += splits[i] + "```"
-            message.channel.send(text)
+            ctx.send(text)
         }
-    },
-};
+    }
 
-function splitLyrics(lyrics: string) {
-    var partitionSize = 2000;
-    const parts = []
+    
+    splitLyrics(lyrics: string) {
+        var partitionSize = 2000;
+        const parts = []
 
-    var array = lyrics.split("\n\n");
-    if (array.length == 1)
-        array = lyrics.split("\n");
+        var array = lyrics.split("\n\n");
+        if (array.length == 1)
+            array = lyrics.split("\n");
 
-    var temp = ""
-    var len = 0;
+        var temp = ""
+        var len = 0;
 
-    for (var str of array) {
-        len += str.length + 4;
+        for (var str of array) {
+            len += str.length + 4;
 
-        if (len >= partitionSize) {
+            if (len >= partitionSize) {
+                parts.push(temp);
+                temp = ""
+                temp += str;
+                len = 0;
+            } else {
+                temp += `${str} \n\n`;
+            }
+        }
+        if (len != 0) {
             parts.push(temp);
-            temp = ""
-            temp += str;
-            len = 0;
-        } else {
-            temp += `${str} \n\n`;
         }
-    }
-    if (len != 0) {
-        parts.push(temp);
+
+        return parts;
     }
 
-    return parts;
+    public getInteraction() {
+        return {
+            "name": "lyrics",
+            "description": "Fetches track lyrics from google",
+            "options": [
+              {
+                "type": 3,
+                "name": "title",
+                "description": "Title of the track",
+                "required": false
+              }
+            ]
+          }
+          
+    }
 }

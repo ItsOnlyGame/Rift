@@ -2,6 +2,7 @@ import * as fs from 'fs'
 
 interface ConfigInterface {
     token: string,
+    bot_id: string,
     defaultColors: {
         success: string,
         error: string
@@ -14,6 +15,7 @@ interface ConfigInterface {
 
 const defaultConfig = {
     token: null,
+    bot_id: null,
     defaultColors: {
         success: "#4da2b7",
         error: "#bc2727"
