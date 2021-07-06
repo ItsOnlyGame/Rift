@@ -23,8 +23,7 @@ Add [this](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/app
 # Slash Commands
 If you want to use slash commands, just give the bot permissions in the discord developer portal
 https://discord.com/developers/docs/interactions/slash-commands
-
-When you're done with the bot permissions, open the directory in terminal ``npm run loadSlashCommands``
+And start it up, it may take up to an hour to activate them
 
 # Commands
 I'm just assuming the prefix is default: ``r!``
@@ -116,6 +115,7 @@ I'm just assuming the prefix is default: ``r!``
 - **Aliases:** ``delete``, ``del``
 - **Usage:** ``r!delete [amount]`` deletes the give amount of messages. ``r!delete`` only deletes one message
 - Deletes messages
+- This commands doesn't have a slash version
 
 
 ## Other
