@@ -1,5 +1,17 @@
 # Change Log
 
+## [2.2.2] | 6.7.2021
+## Added
+- Automatic interations handling
+- Log4Js to handle logging for debug purposes
+
+## Changed
+- Delete command no longer has an interation
+
+## Fixed
+- Interaction with no arguments didn't work
+
+
 ## [2.2.1] | 3.7.2021
 ## Fixed
 - Interaction replies weren't handeled correctly

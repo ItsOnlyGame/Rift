@@ -23,7 +23,6 @@ export default class Prefix extends Command {
 
         var newprefix = ctx.args[0].trim();
         ctx.send("Prefix changed from ``" + guildSettings.prefix + "`` to ``" + newprefix + "``")
-        console.log(newprefix)
         guildSettings.prefix = newprefix;
         guildSettings.save()
     }

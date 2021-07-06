@@ -22,8 +22,9 @@ export default class Leave extends Command {
             player.disconnect();
             player.destroy();
 
-            if (guildSettings.notifyVoiceConnection)
-            ctx.send(`Disconnecting from ${ctx.member.voice.channel.name}`)
+            if (guildSettings.notifyVoiceConnection || ctx.interactionData) {
+                ctx.send(`Disconnecting from ${ctx.member.voice.channel.name}`)
+            }
 
         } else {
             ctx.send(`I'm not connected to any voice channel`)

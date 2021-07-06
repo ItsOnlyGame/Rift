@@ -1,2 +1,7 @@
-node_modules
-config
+# Folders
+node_modules/
+config/
+logs/
+
+# Files
+*.log

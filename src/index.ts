@@ -5,7 +5,25 @@ import { ErelaManager, initErela } from './Models/LavaplayerManager';
 import getConfig from './Config';
 import Command from './Models/Command'
 import MessageCtx from './Models/MessageCtx';
+import * as interactions from 'discord-slash-commands-client'
+import { configure, getLogger } from 'log4js';
+import { initSlashCommands } from './SlashCommandInit';
 
+const logger = getLogger();
+configure({
+    appenders: { 
+        files: { type: "dateFile", maxLogSize: 10485760, filename: "logs/out.log" },
+        console: {type: 'console' }
+    },
+    categories: { 
+        default: { appenders: ["console", "files"], level: "all" } 
+    }
+});
+
+const interactionsClient = new interactions.Client(
+    getConfig().token,
+    getConfig().bot_id
+);
 
 const client = new Client();
 initErela(client)
@@ -20,8 +38,10 @@ async function loadCommandsFromDir(path: string) {
     const content = fs.readdirSync(path);
     for (var file of content) {
         if (file.endsWith(".ts")) {
-            const command = await import(`${path.replace("./src", ".")}/${file}`);
-            commands.push(new command.default);
+            const ICommand = await import(`${path.replace("./src", ".")}/${file}`);
+            const command: Command = new ICommand.default
+            commands.push(command);
+
         } else {
             await loadCommandsFromDir(`${path}/${file}`);
         }
@@ -29,17 +49,19 @@ async function loadCommandsFromDir(path: string) {
 }
 
 client.once('ready', async () => {
+    initSlashCommands();
+
     ErelaManager.init(client.user.id);
     await loadCommandsFromDir('./src/Commands');
-    console.log('Rift is ready!');
+    logger.info('Rift is ready!');
 });
 
 client.once('reconnecting', () => {
-    console.log('Reconnecting!');
+    logger.info('Reconnecting!');
 });
 
 client.once('disconnect', () => {
-    console.log('Disconnect!');
+    logger.info('Disconnect!');
 });
 
 client.on('message', async message => {
@@ -90,17 +112,17 @@ client.on('message', async message => {
 client.ws.on('INTERACTION_CREATE', async interaction => {
     const args: string[] = [];
 
-    for (var temp of interaction.data.options) {
-        args.push(temp.value)
+    if (interaction.data.options != undefined) {
+        for (var temp of interaction.data.options) {
+            args.push(temp.value)
+        }
     }
+
 
     const channel: Channel = client.channels.cache.get(interaction.channel_id);
     const member: GuildMember = client.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id)
     
     const ctx = new MessageCtx(args, channel, member, interaction)
-
-    console.log(ctx.member)
-    console.log(ctx.channel)
 
     const commandName = interaction.data.name;   
     const command = commands.filter(c => c.aliases != undefined).filter(c => c.aliases.includes(commandName))[0];
@@ -127,6 +149,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
         ctx.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
         console.error(error);
     }
+
 })
 
 client.on("raw", d => ErelaManager.updateVoiceState(d));

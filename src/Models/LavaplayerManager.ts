@@ -2,7 +2,8 @@ import { Client, TextChannel } from "discord.js";
 import { Manager } from "erela.js";
 import Spotify from 'erela.js-spotify';
 import getConfig from "../Config";
-
+import { getLogger } from 'log4js';
+const logger = getLogger();
 
 // Define some options for the node
 const nodes = [{
@@ -36,12 +37,12 @@ function initErela(client: Client) {
 
     // Emitted whenever a node connects
     ErelaManager.on("nodeConnect", node => {
-        console.log(`Node "${node.options.identifier}" connected.`)
+        logger.info(`Node "${node.options.identifier}" connected.`)
     })
 
     // Emitted whenever a node encountered an error
     ErelaManager.on("nodeError", (node, error) => {
-        console.log(`Node "${node.options.identifier}" encountered an error: ${error.message}.`)
+        logger.info(`Node "${node.options.identifier}" encountered an error: ${error.message}.`)
     })
 
     ErelaManager.on("socketClosed", (player, payload) => {

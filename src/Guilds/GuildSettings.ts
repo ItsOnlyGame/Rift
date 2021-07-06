@@ -1,5 +1,7 @@
 import { Client, Snowflake } from "discord.js";
 import * as fs from 'fs'
+import { getLogger } from 'log4js';
+const logger = getLogger();
 
 export default class GuildSettings {
     /**
@@ -45,7 +47,7 @@ export default class GuildSettings {
             var file = fs.readFileSync(`./config/guilds/${id}.json`, 'utf-8');
             settings = JSON.parse(file);
         } catch (err) {
-            console.log(err)
+            logger.error(err)
             settings = new GuildSettings(id, client)
             GuildSettings.saveGuildSettings(settings);
         }
@@ -66,9 +68,9 @@ export default class GuildSettings {
 
         fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf-8', (err) => {
             if (err) {
-                console.log(`Error writing file: ${err}`);
+                logger.error(`Error writing file: ${err}`);
             } else {
-                console.log(`File is written successfully!: ${settings.id}.json`);
+                logger.info(`File is written successfully!: ${settings.id}.json`);
             }
         });
     }

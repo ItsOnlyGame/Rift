@@ -24,7 +24,7 @@ export default class Join extends Command {
             });
 
             player.connect();
-            if (guildSettings.notifyVoiceConnection)
+            if (guildSettings.notifyVoiceConnection || ctx.interactionData)
                 ctx.send(`Connecting to ${ctx.member.voice.channel.name}`)
 
         } else {

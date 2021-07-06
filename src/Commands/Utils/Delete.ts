@@ -33,19 +33,7 @@ export default class BotInfo extends Command {
     }
 
     public getInteraction() {
-        return {
-            "name": "delete",
-            "description": "Delete messages",
-            "options": [
-                {
-                    "type": 4,
-                    "name": "amount",
-                    "description": "Amount of messages to delete, 1 if this argument isn't given",
-                    "required": false
-                }
-            ]
-        }
-
+        return null
     }
 
 }

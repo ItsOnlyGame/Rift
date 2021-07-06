@@ -1,11 +1,10 @@
-import { Message, Permissions } from "discord.js";
 import MessageCtx from "./MessageCtx";
 
 export default abstract class Command {
 
     public name: string;
     public description: string;
-    public aliases: string[];
+    public aliases: Array<string>;
     public permissionRequired: number[];
 
     /**
@@ -15,7 +14,7 @@ export default abstract class Command {
      * @param aliases Aliases that the command uses, first one fill be used for discord interactions
      * @param permissionRequired Permissions required to execute the command
      */
-    constructor(name: string, description: string, aliases: string[], permissionRequired: number[]) {
+    constructor(name: string, description: string, aliases: Array<string>, permissionRequired: number[]) {
         this.name = name;
         this.description = description;
         this.aliases = aliases;
@@ -24,8 +23,7 @@ export default abstract class Command {
 
     /**
      * Executes the command
-     * @param {Message} message 
-     * @param {Array<string>} args
+     * @param {MessageCtx} ctx Message Context Object 
      */
     public abstract execute(ctx: MessageCtx): void | Promise<void>;
 
