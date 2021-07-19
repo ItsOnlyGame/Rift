@@ -15,14 +15,12 @@ export default class Leave extends Command {
     }
 
     public execute(ctx: MessageCtx): void {
-        var guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
         const player = ErelaManager.get(ctx.channel.guild.id)
         if (player) {
             player.disconnect();
             player.destroy();
 
-            if (guildSettings.notifyVoiceConnection || ctx.interactionData) {
+            if (ctx.guildSettings.notifyVoiceConnection || ctx.interactionData) {
                 ctx.send(`Disconnecting from ${ctx.member.voice.channel.name}`)
             }
 

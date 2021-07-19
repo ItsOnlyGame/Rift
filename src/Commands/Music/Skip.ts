@@ -15,10 +15,8 @@ export default class Skip extends Command {
     }
 
     public async execute(ctx: MessageCtx): Promise<void> {
-        const guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
-        if (guildSettings.dj_role != null) {
-            if (ctx.member.roles.cache.get(guildSettings.dj_role) == undefined) {
+        if (ctx.guildSettings.dj_role != null) {
+            if (ctx.member.roles.cache.get(ctx.guildSettings.dj_role) == undefined) {
                 ctx.send("You are not a dj")
                 return
             }

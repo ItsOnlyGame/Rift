@@ -1,19 +1,28 @@
 # Change Log
 
+## [2.2.3] | 19.7.2021
+### Added
+- Config file now has an option to enable/disable slash commands
+
+### Fixed
+- Issue #1, GuildSettings json file would get corrupted when modified
+- Issue #2, "Remove" command logic was completely wrong
+
+
 ## [2.2.2] | 6.7.2021
-## Added
+### Added
 - Automatic interations handling
 - Log4Js to handle logging for debug purposes
 
-## Changed
+### Changed
 - Delete command no longer has an interation
 
-## Fixed
+### Fixed
 - Interaction with no arguments didn't work
 
 
 ## [2.2.1] | 3.7.2021
-## Fixed
+### Fixed
 - Interaction replies weren't handeled correctly
 - SlashCommandInit send interactions too quick and resulted in a 429 error (Too many requests)
 
@@ -31,7 +40,7 @@
 - Every command is now contained in a class
 - MessageCtx to replace commands execute arguments
 
-## Fixed
+### Fixed
 - Changing settings didn't save or corrupted the file
 - Lavalink would timeout node connection and disconnect from voice channel, while thinking it was still connected to a voice channel 
 - Help command had a typo

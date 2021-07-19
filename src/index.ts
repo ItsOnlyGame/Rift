@@ -20,11 +20,6 @@ configure({
     }
 });
 
-const interactionsClient = new interactions.Client(
-    getConfig().token,
-    getConfig().bot_id
-);
-
 const client = new Client();
 initErela(client)
 
@@ -49,7 +44,10 @@ async function loadCommandsFromDir(path: string) {
 }
 
 client.once('ready', async () => {
-    initSlashCommands();
+    // If slash commands are enabled to be initiated
+    if (getConfig().enableSlashCommands) {
+        initSlashCommands();
+    }
 
     ErelaManager.init(client.user.id);
     await loadCommandsFromDir('./src/Commands');
@@ -77,6 +75,7 @@ client.on('message', async message => {
     const command = commands.filter(c => c.aliases != undefined).filter(c => c.aliases.includes(commandName))[0];
 
     if (command == undefined) {
+        if (commandName == "") return;
         message.channel.send(`Command ${commandName} doesn't exist!`)
         return;
     }
@@ -92,7 +91,7 @@ client.on('message', async message => {
     }
 
     try {
-        await command.execute(new MessageCtx(args, message.channel, message.member));
+        await command.execute(new MessageCtx(args, message.channel, message.member, undefined, guild));
     } catch (error) {
         message.channel.send('There was an error trying to execute that command!');
         message.channel.send(error)
@@ -100,10 +99,10 @@ client.on('message', async message => {
         console.error(error);
     }
 
-    guild = GuildSettings.getGuildSettings(message.guild.id, message.client);
     if (guild.autoclean) {
-        if (command.name != "Delete")
+        if (command.name != "Delete") {
             message.delete();
+        }
     }
 
 });

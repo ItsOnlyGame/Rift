@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import { getLogger } from 'log4js';
 const logger = getLogger();
 
-export default class GuildSettings {
+class GuildSettings {
     /**
      * 
      * @param {string|number} id 
@@ -31,20 +31,17 @@ export default class GuildSettings {
         this.notifyVoiceConnection = false;
     }
 
-    save() {
-        GuildSettings.saveGuildSettings(this);
-    }
-
     /**
      * 
      * @param {Snowflake} id 
      * @param {Client} client 
      * @returns GuildSetting for the specified guild
      */
-    static getGuildSettings(id: Snowflake, client: Client): GuildSettings {
-        var settings: GuildSettings;
+    public static getGuildSettings(id: Snowflake, client: Client): GuildSettings {
+        var settings: any;
         try {
             var file = fs.readFileSync(`./config/guilds/${id}.json`, 'utf-8');
+            if (file == "") throw "ERROR: File content is empty"
             settings = JSON.parse(file);
         } catch (err) {
             logger.error(err)
@@ -61,10 +58,11 @@ export default class GuildSettings {
      * GuildSettings to be saved
      * @param {GuildSettings} settings 
      */
-    static saveGuildSettings(settings: GuildSettings) {
+     public static saveGuildSettings(settings: GuildSettings) : void {
         if (!fs.existsSync(`./config/guilds`)){
             fs.mkdirSync(`./config/guilds`)
         }
+        console.log(settings)
 
         fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf-8', (err) => {
             if (err) {
@@ -75,3 +73,7 @@ export default class GuildSettings {
         });
     }
 }
+
+
+
+export default GuildSettings;

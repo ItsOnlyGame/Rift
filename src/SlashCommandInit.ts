@@ -10,6 +10,7 @@ const logger = getLogger();
  */
 const awaitTimer = 5000; // 5000ms
 
+// InteracctionClient object, used to handle bot slash commands
 const interactionsClient = new Client(
     getConfig().token,
     getConfig().bot_id
@@ -18,7 +19,7 @@ const interactionsClient = new Client(
 /**
  * bot commands
  */
-const commands: Array<Command> = [];
+var commands: Array<Command> = [];
 
 /**
  * Loads every command from commands
@@ -67,11 +68,11 @@ async function deleteIrrelevantCommand(interaction: any) {
             if (cmd.getInteraction() == null) {
                 await interactionsClient.deleteCommand(interaction.id)
                 await delay(awaitTimer)
-                commands.slice(index, 1);
+                commands.splice(index, 1);
                 return true;
             } else {
                 // Found and nothing has changed
-                commands.slice(index, 1);
+                commands.splice(index, 1);
                 return false;
             }
         }
@@ -93,12 +94,21 @@ async function initSlashCommands() {
     // Load commands
     logger.debug("Loading commands for interactions loading")
     await loadCommandsFromDir('./src/Commands');
-
+    commands = commands.filter(cmd => cmd.getInteraction() != null);
     logger.debug(`Due to Discord API Rate limits, this might take a while!`)
 
+    /**
+     * Get existing slash commands for this bot
+     * Loop through every existing slash command and find the equivilant version of it in the bot commands
+     * If not found delete it, and if some commands were not loaded as slash commands load them
+     */
     const existingCommands = await interactionsClient.getCommands({});
     var i = 0
+
+    // Check whether existingCommands is an array or a single variable
     if (existingCommands instanceof Array) {
+
+        // Loop through the array to find changes and handle them 
         for (var t of existingCommands) {
             const deleted = await deleteIrrelevantCommand(t)
             const clm = deleted ? `Removed ${t.name} interaction` : `Interaction ${t.name} is ok`
@@ -111,10 +121,11 @@ async function initSlashCommands() {
         logger.debug(clm)
     }
 
+
+    // Create slash commands that don't exist at the moment
     logger.debug(`Creating ${commands.length} new slash commands`)
     var i = 0
     for (var temp of commands) {
-        if (temp.getInteraction() == null) continue;
         await interactionsClient.createCommand(temp.getInteraction()).catch((err) => {
             logger.error(`Error occurred: ${err.response.data.message}`)
         })

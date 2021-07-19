@@ -19,7 +19,7 @@ export default class BotInfo extends Command {
             "Rift: " + "\n" +
             "Version: " + Utils.Version + "\n" +
             "ID: " + ctx.channel.client.user.id + "\n" +
-            "Github: " + "**https://github.com/ItsOnlyGame/Rift**" + "\n\n" +
+            "Github: " + "https://github.com/ItsOnlyGame/Rift" + "\n\n" +
             "You can report you issues to github\n```";
 
         ctx.send(str)

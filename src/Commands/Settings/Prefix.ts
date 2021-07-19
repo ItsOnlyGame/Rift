@@ -14,17 +14,15 @@ export default class Prefix extends Command {
     }
 
     public async execute(ctx: MessageCtx): Promise<void> {
-        var guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
         if (ctx.args.length == 0) {
-            ctx.send("Current prefix is ``" + guildSettings.prefix + "``")
+            ctx.send("Current prefix is ``" + ctx.guildSettings.prefix + "``")
             return
         }
 
         var newprefix = ctx.args[0].trim();
-        ctx.send("Prefix changed from ``" + guildSettings.prefix + "`` to ``" + newprefix + "``")
-        guildSettings.prefix = newprefix;
-        guildSettings.save()
+        ctx.send("Prefix changed from ``" + ctx.guildSettings.prefix + "`` to ``" + newprefix + "``")
+        ctx.guildSettings.prefix = newprefix;
+        GuildSettings.saveGuildSettings(ctx.guildSettings)
     }
 
     public getInteraction() {

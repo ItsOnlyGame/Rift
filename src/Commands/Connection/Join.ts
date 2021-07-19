@@ -14,8 +14,6 @@ export default class Join extends Command {
     }
 
     public execute(ctx: MessageCtx): void {
-        var guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
         if (!ErelaManager.get(ctx.channel.guild.id)) {
             const player = ErelaManager.create({
                 guild: ctx.channel.guild.id,
@@ -24,7 +22,7 @@ export default class Join extends Command {
             });
 
             player.connect();
-            if (guildSettings.notifyVoiceConnection || ctx.interactionData)
+            if (ctx.guildSettings.notifyVoiceConnection || ctx.interactionData)
                 ctx.send(`Connecting to ${ctx.member.voice.channel.name}`)
 
         } else {

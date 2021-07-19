@@ -14,25 +14,23 @@ export default class AutoClean extends Command {
     }
 
     public async execute(ctx: MessageCtx): Promise<void> {
-        var guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
         if (ctx.args.length == 0) {
-            ctx.send("Current Auto Clean mode is ``" + guildSettings.autoclean + "``")
+            ctx.send("Current Auto Clean mode is ``" + ctx.guildSettings.autoclean + "``")
             return
         }
 
         var newAutoClean = ctx.args[0].trim().toLowerCase();
         if (newAutoClean == "true") {
             ctx.send("Auto Clean mode set to ``" + newAutoClean + "``")
-            guildSettings.autoclean = true
-            guildSettings.save()
+            ctx.guildSettings.autoclean = true
+            GuildSettings.saveGuildSettings(ctx.guildSettings)
             return;
 
         } else if (newAutoClean == "false") {
 
             ctx.send("Auto Clean mode set to ``" + newAutoClean + "``")
-            guildSettings.autoclean = false
-            guildSettings.save()
+            ctx.guildSettings.autoclean = false
+            GuildSettings.saveGuildSettings(ctx.guildSettings)
             return;
 
         }

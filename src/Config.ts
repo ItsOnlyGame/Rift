@@ -10,7 +10,8 @@ interface ConfigInterface {
     spotify: {
         clientId: string,
         clientSecret: string
-    }
+    },
+    enableSlashCommands: string
 }
 
 const defaultConfig = {
@@ -23,7 +24,8 @@ const defaultConfig = {
     spotify: {
         clientId: null,
         clientSecret: null
-    }
+    },
+    enableSlashCommands: false
 }
 
 export default function getConfig(): ConfigInterface {

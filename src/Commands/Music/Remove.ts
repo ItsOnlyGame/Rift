@@ -15,10 +15,8 @@ export default class Remove extends Command {
     }
 
     public async execute(ctx: MessageCtx): Promise<void> {
-        const guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
-        if (guildSettings.dj_role != null) {
-            if (ctx.member.roles.cache.get(guildSettings.dj_role) == undefined) {
+        if (ctx.guildSettings.dj_role != null) {
+            if (ctx.member.roles.cache.get(ctx.guildSettings.dj_role) == undefined) {
                 ctx.send("You are not a dj")
                 return 
             }
@@ -48,9 +46,16 @@ export default class Remove extends Command {
                 ctx.send(`Not a valid index in queue (${ctx.args[0]})`)
                 return;
             }
+            deleteIndex -= 1;
         }
-        
-        player.queue.remove(deleteIndex + 1)
+        if (deleteIndex < 0 || deleteIndex >= player.queue.length) {
+            ctx.send("Invalid queue position")
+            return;
+        }
+
+        const track = player.queue[deleteIndex];
+        ctx.send(`Removed ${track.title} from queue!`)
+        player.queue.remove(deleteIndex)
     }
 
     public getInteraction() {

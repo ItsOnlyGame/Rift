@@ -1,4 +1,5 @@
 import { APIMessageContentResolvable, Channel, Client, GuildMember, Message, MessageAdditions, MessageEmbed, MessageOptions, TextChannel } from "discord.js";
+import GuildSettings from "../Guilds/GuildSettings";
 
 export default class MessageCtx {
 
@@ -6,13 +7,20 @@ export default class MessageCtx {
     public channel: TextChannel;
     public member: GuildMember;
     public interactionData: any;
+    public guildSettings: GuildSettings;
 
-    constructor(args: string[], channel: Channel, member: GuildMember, interactionData?: any) {
+    constructor(args: string[], channel: Channel, member: GuildMember, interactionData?: any, guildSettings?: GuildSettings) {
         this.args = args;
 
         this.channel = channel as TextChannel
         this.member = member;
         this.interactionData = interactionData;
+
+        if (guildSettings == undefined) {
+            this.guildSettings = GuildSettings.getGuildSettings(this.channel.guild.id, this.channel.client)
+        } else {
+            this.guildSettings = guildSettings
+        }
     }
 
     async send(content: APIMessageContentResolvable | (MessageOptions & {split?: false;}) | MessageAdditions): Promise<Message|any> {

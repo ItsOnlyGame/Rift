@@ -14,25 +14,23 @@ export default class NotifyVoiceConnection extends Command {
     }
 
     public async execute(ctx: MessageCtx): Promise<void> {
-        var guildSettings = GuildSettings.getGuildSettings(ctx.channel.guild.id, ctx.channel.client)
-
         if (ctx.args.length == 0) {
-            ctx.send("Notify voice connection mode is ``"+guildSettings.notifyVoiceConnection+"``")
+            ctx.send("Notify voice connection mode is ``"+ctx.guildSettings.notifyVoiceConnection+"``")
             return
         }
 
         var newNotifyVoiceConnection = ctx.args[0].trim().toLowerCase();
         if (newNotifyVoiceConnection == "true") {
             ctx.send("Notify voice connection mode set to ``"+newNotifyVoiceConnection+"``")
-            guildSettings.notifyVoiceConnection = true
-            guildSettings.save()
+            ctx.guildSettings.notifyVoiceConnection = true
+            GuildSettings.saveGuildSettings(ctx.guildSettings)
             return;
 
         } else if (newNotifyVoiceConnection == "false") {
 
             ctx.send("Notify voice connection mode set to ``"+newNotifyVoiceConnection+"``")
-            guildSettings.notifyVoiceConnection = false
-            guildSettings.save()
+            ctx.guildSettings.notifyVoiceConnection = false
+            GuildSettings.saveGuildSettings(ctx.guildSettings)
             return;
 
         }
