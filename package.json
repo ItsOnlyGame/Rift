@@ -1,6 +1,6 @@
 {
     "name": "rift",
-    "version": "2.2.2",
+    "version": "2.2.3",
     "description": "This is a discord bot mainly for playing music",
     "main": "./src/index.ts",
     "scripts": {
