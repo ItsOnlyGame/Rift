@@ -5,7 +5,6 @@ import { ErelaManager, initErela } from './Models/LavaplayerManager';
 import getConfig from './Config';
 import Command from './Models/Command'
 import MessageCtx from './Models/MessageCtx';
-import * as interactions from 'discord-slash-commands-client'
 import { configure, getLogger } from 'log4js';
 import { initSlashCommands } from './SlashCommandInit';
 
@@ -148,7 +147,20 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
         ctx.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
         console.error(error);
     }
+})
 
+client.on('voiceStateUpdate', (old, current) => {
+
+    if (old.channelID != null) {
+        const channel = old.guild.channels.cache.get(old.channelID);
+        if (channel.members.size == 1) {
+            if (channel.members.array()[0].user.id == old.client.user.id) {
+                const player = ErelaManager.players.get(channel.guild.id);
+                player.disconnect()
+                player.destroy();
+            }
+        }
+    } 
 })
 
 client.on("raw", d => ErelaManager.updateVoiceState(d));
