@@ -62,9 +62,8 @@ class GuildSettings {
         if (!fs.existsSync(`./config/guilds`)){
             fs.mkdirSync(`./config/guilds`)
         }
-        console.log(settings)
 
-        fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings), 'utf-8', (err) => {
+        fs.writeFile(`./config/guilds/${settings.id}.json`, JSON.stringify(settings, null, "\t"), 'utf-8', (err) => {
             if (err) {
                 logger.error(`Error writing file: ${err}`);
             } else {

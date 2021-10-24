@@ -1,12 +1,10 @@
 import * as fs from 'fs'
-import { Channel, Client, GuildMember, MessageEmbed } from "discord.js";
+import { Channel, Client, GuildChannel, Intents, VoiceChannel } from "discord.js";
 import GuildSettings from './Guilds/GuildSettings';
-import { ErelaManager, initErela } from './Models/LavaplayerManager';
-import getConfig from './Config';
 import Command from './Models/Command'
-import MessageCtx from './Models/MessageCtx';
 import { configure, getLogger } from 'log4js';
-import { initSlashCommands } from './SlashCommandInit';
+import Config from './Config';
+import { distube, initDisTube } from './Models/AudioManager';
 
 const logger = getLogger();
 configure({
@@ -19,10 +17,9 @@ configure({
     }
 });
 
-const client = new Client();
-initErela(client)
-
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_VOICE_STATES] });
 const commands: Command[] = [];
+initDisTube(client)
 
 /**
  * Loads every command from commands
@@ -30,26 +27,27 @@ const commands: Command[] = [];
  */
 async function loadCommandsFromDir(path: string) {
     const content = fs.readdirSync(path);
+
+    var ext = process.env.NODE_ENV == 'development' ? '.ts' : '.js'
+
     for (var file of content) {
-        if (file.endsWith(".ts")) {
-            const ICommand = await import(`${path.replace("./src", ".")}/${file}`);
+        if (file.endsWith(ext)) {
+            const ICommand = await import(`${path.replace("./src", ".").replace("./dist", ".")}/${file}`);
             const command: Command = new ICommand.default
             commands.push(command);
 
+        } else if (file.endsWith('.js.map')) {
+            continue
         } else {
             await loadCommandsFromDir(`${path}/${file}`);
         }
     }
 }
 
-client.once('ready', async () => {
-    // If slash commands are enabled to be initiated
-    if (getConfig().enableSlashCommands) {
-        initSlashCommands();
-    }
 
-    ErelaManager.init(client.user.id);
-    await loadCommandsFromDir('./src/Commands');
+client.once('ready', async () => {
+    var ext = process.env.NODE_ENV == 'development' ? 'src' : 'dist'
+    await loadCommandsFromDir('./'+ext+'/Commands');
     logger.info('Rift is ready!');
 });
 
@@ -61,7 +59,7 @@ client.once('disconnect', () => {
     logger.info('Disconnect!');
 });
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
     if (message.author.bot) return;
     if (!message.guild) return;
     if (!message.member) return;
@@ -81,8 +79,8 @@ client.on('message', async message => {
 
 
     if (command.permissionRequired != null) {
-        for (const req of command.permissionRequired) {
-            if (!message.member.hasPermission(req)) {
+        for (const perm of command.permissionRequired) {
+            if (!message.member.permissions.has(perm, true)) {
                 message.channel.send("You don't have the required permissions to execute this command!");
                 return;
             }
@@ -90,78 +88,34 @@ client.on('message', async message => {
     }
 
     try {
-        await command.execute(new MessageCtx(args, message.channel, message.member, undefined, guild));
+        command.execute(message, args).then(() => {
+            if (guild.autoclean) {
+                if (command.name != "Delete") {
+                    setTimeout(() => message.delete(), 3000)
+                }
+            }
+        }).catch();
     } catch (error) {
         message.channel.send('There was an error trying to execute that command!');
         message.channel.send(error)
         message.channel.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
-        console.error(error);
-    }
-
-    if (guild.autoclean) {
-        if (command.name != "Delete") {
-            message.delete();
-        }
+        logger.error(error);
     }
 
 });
 
-//@ts-ignore
-client.ws.on('INTERACTION_CREATE', async interaction => {
-    const args: string[] = [];
-
-    if (interaction.data.options != undefined) {
-        for (var temp of interaction.data.options) {
-            args.push(temp.value)
-        }
-    }
-
-
-    const channel: Channel = client.channels.cache.get(interaction.channel_id);
-    const member: GuildMember = client.guilds.cache.get(interaction.guild_id).members.cache.get(interaction.member.user.id)
-    
-    const ctx = new MessageCtx(args, channel, member, interaction)
-
-    const commandName = interaction.data.name;   
-    const command = commands.filter(c => c.aliases != undefined).filter(c => c.aliases.includes(commandName))[0];
-
-    if (command == undefined) {
-        ctx.send(`Command ${commandName} doesn't exist!`)
-        return;
-    }
-
-    if (command.permissionRequired != null) {
-        for (const req of command.permissionRequired) {
-            if (!ctx.member.hasPermission(req)) {
-                ctx.send("You don't have the required permissions to execute this command!");
-                return;
-            }
-        }
-    }
-
-    try {
-        await command.execute(ctx);
-    } catch (error) {
-        ctx.send('There was an error trying to execute that command!');
-        ctx.send(error)
-        ctx.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
-        console.error(error);
-    }
-})
 
 client.on('voiceStateUpdate', (old, current) => {
-
-    if (old.channelID != null) {
-        const channel = old.guild.channels.cache.get(old.channelID);
+    if (old.channelId != null) {
+        const channel = current.guild.channels.cache.get(old.channelId) as GuildChannel;
         if (channel.members.size == 1) {
-            if (channel.members.array()[0].user.id == old.client.user.id) {
-                const player = ErelaManager.players.get(channel.guild.id);
-                player.disconnect()
-                player.destroy();
+            if (channel.members.first().user.id == old.client.user.id) {
+                const queue = distube.getQueue(current.guild);
+                if (queue) queue.voices.leave(current.guild);
             }
         }
     } 
 })
 
-client.on("raw", d => ErelaManager.updateVoiceState(d));
-client.login(getConfig().token);
+
+client.login(Config.getConfig().token);

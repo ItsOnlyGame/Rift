@@ -1,8 +1,7 @@
-import { Message } from "discord.js";
-import GuildSettings from "../../Guilds/GuildSettings";
+import { getVoiceConnection } from "@discordjs/voice";
+import { Message, TextChannel } from "discord.js";
+import { distube } from "../../Models/AudioManager";
 import Command from "../../Models/Command";
-import { ErelaManager } from "../../Models/LavaplayerManager";
-import MessageCtx from "../../Models/MessageCtx";
 
 export default class Leave extends Command {
     constructor() {
@@ -14,25 +13,27 @@ export default class Leave extends Command {
         )
     }
 
-    public execute(ctx: MessageCtx): void {
-        const player = ErelaManager.get(ctx.channel.guild.id)
-        if (player) {
-            player.disconnect();
-            player.destroy();
-
-            if (ctx.guildSettings.notifyVoiceConnection || ctx.interactionData) {
-                ctx.send(`Disconnecting from ${ctx.member.voice.channel.name}`)
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const memberVoiceConnection = message.member.voice;
+        const existingConnection = getVoiceConnection((message.channel as TextChannel).guildId)
+    
+        if (existingConnection != null) {
+    
+            if (!memberVoiceConnection) {
+                message.channel.send('You have to be in the same voice channel as I to do that!')
+                return;
             }
-
-        } else {
-            ctx.send(`I'm not connected to any voice channel`)
+    
+            if (existingConnection.joinConfig.channelId != memberVoiceConnection.channel.id) {
+                message.channel.send('You have to be in the same voice channel as I to do that!')
+                return;
+            }
+    
+            distube.voices.leave(message);
+            message.channel.send(`Leaving voice channel`)
+            return;
         }
-    }
-
-    public getInteraction() {
-        return {
-            "name": "leave",
-            "description": "Leave the voice channel"
-          }
+    
+        message.channel.send('Not connected to a voice channel')
     }
 }

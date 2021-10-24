@@ -1,5 +1,24 @@
 # Change Log
 
+## [3.0.0] | -.10.2021
+### Added
+- Change music and voice connection handling to distube
+
+### Changed
+- Changed lavalink to distube
+
+### Removed
+- Slash commands
+
+### Fixed
+- Queue command didn't respect the cap so its now limited to 40 tracks per message
+
+
+## [2.2.4] | 5.8.2021
+### Added
+- Automatically disconnect from voice channel if alone
+
+
 ## [2.2.3] | 19.7.2021
 ### Added
 - Config file now has an option to enable/disable slash commands

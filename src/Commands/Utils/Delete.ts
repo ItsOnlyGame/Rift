@@ -1,6 +1,5 @@
 import { Message, TextChannel } from "discord.js";
 import Command from "../../Models/Command";
-import MessageCtx from "../../Models/MessageCtx";
 
 export default class BotInfo extends Command {
     constructor() {
@@ -12,12 +11,12 @@ export default class BotInfo extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
+    public async execute(message: Message, args: string[]): Promise<void> {
         var deleteAmount = 1;
-        if (ctx.args.length >= 1) {
-            deleteAmount = Number(ctx.args[0]);
+        if (args.length >= 1) {
+            deleteAmount = Number(args[0]);
             if (isNaN(deleteAmount)) {
-                ctx.send(`Not a valid amount to delete: ${ctx.args[0]}`)
+                message.channel.send(`Not a valid amount to delete: ${args[0]}`)
                 return;
             }
         }
@@ -25,15 +24,10 @@ export default class BotInfo extends Command {
         const times = Math.floor(deleteAmount / 100);
 
         for (var i = 0; i < times; i++) {
-            ctx.channel.bulkDelete(100)
+            (message.channel as TextChannel).bulkDelete(100)
         }
 
         deleteAmount -= times * 100;
-        ctx.channel.bulkDelete(deleteAmount);
+        (message.channel as TextChannel).bulkDelete(deleteAmount);
     }
-
-    public getInteraction() {
-        return null
-    }
-
 }

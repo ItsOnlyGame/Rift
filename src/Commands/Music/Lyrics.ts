@@ -1,8 +1,7 @@
-import { Message } from "discord.js";
-import { ErelaManager } from "../../Models/LavaplayerManager";
+import { Message } from 'discord.js';
 import lyricsFinder from 'lyrics-finder';
+import { distube } from '../../Models/AudioManager';
 import Command from "../../Models/Command";
-import MessageCtx from "../../Models/MessageCtx";
 
 export default class Lyrics extends Command {
     constructor() {
@@ -14,37 +13,38 @@ export default class Lyrics extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
-        const player = ErelaManager.get(ctx.channel.guild.id)   
-        if (player == undefined) {
-            if (ctx.args.length == 0) {
-                ctx.send("No search query given nor was nothing is playing!");
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const queue = distube.getQueue(message);
+        
+        if (queue == undefined) {
+            if (args.length == 0) {
+                message.channel.send("No search query given nor was nothing is playing!");
                 return;
             }
 
-            const lyrics: string = await lyricsFinder(ctx.args.join("").trim()) || 'No lyrics found!'
+            const lyrics: string = await lyricsFinder(args.join("").trim()) || 'No lyrics found!'
             var splits = this.splitLyrics(lyrics)
             for (var i = 0; i < splits.length; i++) {
                 var text = "```";
                 if (i == 0) {
-                    text += "\nLyrics for "+ ctx.args.join("").trim() + "\n\n";
+                    text += "\nLyrics for "+ args.join("").trim() + "\n\n";
                 } else {
                     text += "\n"
                 }
                 text += splits[i] + "```"
-                ctx.send(text)
+                message.channel.send(text)
             }
 
             return;
         }
 
-        if (player.queue.length == 0 && player.queue.current == undefined) {
-            ctx.send("Nothing is playing!");
+        if (queue.songs.length == 0) {
+            message.channel.send("Nothing is playing!");
             return;
         }
         
 
-        const trackTitle = `${player.queue.current.title}`;
+        const trackTitle = `${queue.songs[0].name}`;
         const lyrics: string = await lyricsFinder(trackTitle) || 'No lyrics found!'
 
         var splits = this.splitLyrics(lyrics)
@@ -56,7 +56,7 @@ export default class Lyrics extends Command {
                 text += "\n"
             }
             text += splits[i] + "```"
-            ctx.send(text)
+            message.channel.send(text)
         }
     }
 
@@ -91,19 +91,4 @@ export default class Lyrics extends Command {
         return parts;
     }
 
-    public getInteraction() {
-        return {
-            "name": "lyrics",
-            "description": "Fetches track lyrics from google",
-            "options": [
-              {
-                "type": 3,
-                "name": "title",
-                "description": "Title of the track",
-                "required": false
-              }
-            ]
-          }
-          
-    }
 }

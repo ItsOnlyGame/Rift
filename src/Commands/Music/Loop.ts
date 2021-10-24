@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
+import { RepeatMode } from "distube";
 import GuildSettings from "../../Guilds/GuildSettings";
+import { distube } from "../../Models/AudioManager";
 import Command from "../../Models/Command";
-import { ErelaManager } from "../../Models/LavaplayerManager";
-import MessageCtx from "../../Models/MessageCtx";
 
 export default class Loop extends Command {
     constructor() {
@@ -14,45 +14,17 @@ export default class Loop extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
-        if (ctx.guildSettings.dj_role != null) {
-            if (ctx.member.roles.cache.get(ctx.guildSettings.dj_role) == undefined) {
-                ctx.send("You are not a dj")
-                return 
-            }
-        }
-
-        const player = ErelaManager.get(ctx.channel.guild.id)   
-        if (player == undefined) {
-            ctx.send("Nothing is currenly playing");
-            return;
-        }
-
-        if (player.queue.length == 0 && player.queue.current == undefined) {
-            ctx.send("Queue is empty!");
-            return;
-        }
-
-        if (player.voiceChannel != ctx.member.voice.channel.id) {
-            ctx.send("You need to be in the same voice channel as I")
-            return;
-        }
-
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const queue = distube.getQueue(message)
         
-        if (player.trackRepeat) {
-            player.setTrackRepeat(false)
-            ctx.send("Not looping current track")
+        if (queue.repeatMode == 0) {
+            queue.setRepeatMode(RepeatMode.DISABLED)
+            message.channel.send("Looping: disabled")
 
         } else {
-            player.setTrackRepeat(true)
-            ctx.send("Looping current track")
+            queue.setRepeatMode(RepeatMode.SONG)
+            message.channel.send("Looping: enabled")
         }
-    }
-
-    public getInteraction() {
-        return {
-            "name": "loop",
-            "description": "Loop current track"
-        }
+        
     }
 }

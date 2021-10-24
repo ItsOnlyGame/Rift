@@ -1,7 +1,5 @@
 import { Message } from 'discord.js'
 import Command from '../../Models/Command';
-import MessageCtx from '../../Models/MessageCtx';
-import Utils from '../../Utils';
 
 export default class BotInfo extends Command {
     constructor() {
@@ -13,23 +11,16 @@ export default class BotInfo extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
+    public async execute(message: Message, args: string[]): Promise<void> {
         const str =
             "```" +
             "Rift: " + "\n" +
-            "Version: " + Utils.Version + "\n" +
-            "ID: " + ctx.channel.client.user.id + "\n" +
+            "Version: " + process.env.npm_package_version + "\n" +
+            "ID: " + message.channel.client.user.id + "\n" +
             "Github: " + "https://github.com/ItsOnlyGame/Rift" + "\n\n" +
             "You can report you issues to github\n```";
 
-        ctx.send(str)
-    }
-
-    public getInteraction() {
-        return {
-            "name": "bot",
-            "description": "Bot info"
-        }
+        message.channel.send(str)
     }
 
 }

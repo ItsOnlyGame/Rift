@@ -1,7 +1,7 @@
-import GuildSettings from "../../Guilds/GuildSettings";
+import { getVoiceConnection } from "@discordjs/voice";
+import { Message, TextChannel } from "discord.js";
+import { distube } from "../../Models/AudioManager";
 import Command from "../../Models/Command";
-import { ErelaManager } from "../../Models/LavaplayerManager";
-import MessageCtx from "../../Models/MessageCtx";
 
 export default class Join extends Command {
     constructor() {
@@ -13,27 +13,32 @@ export default class Join extends Command {
         )
     }
 
-    public execute(ctx: MessageCtx): void {
-        if (!ErelaManager.get(ctx.channel.guild.id)) {
-            const player = ErelaManager.create({
-                guild: ctx.channel.guild.id,
-                voiceChannel: ctx.member.voice.channel.id,
-                textChannel: ctx.channel.id,
-            });
-
-            player.connect();
-            if (ctx.guildSettings.notifyVoiceConnection || ctx.interactionData)
-                ctx.send(`Connecting to ${ctx.member.voice.channel.name}`)
-
-        } else {
-            ctx.send(`Already connected to a voice channel`)
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const memberVoiceConnection = message.member.voice;
+        
+        if (!memberVoiceConnection) {
+            message.channel.send('You have to be in a voice channel!')
+            return;
         }
+
+        if (!memberVoiceConnection.channel) {
+            message.channel.send('You have to be in a voice channel!')
+            return;
+        }
+    
+        var connection = getVoiceConnection((message.channel as TextChannel).guildId)
+        
+        if (connection != null) {
+            if (connection.joinConfig.channelId != memberVoiceConnection.channel.id) {
+                message.channel.send('Currently connected to another voice channel!')
+                return;
+            }
+            return null;
+        } 
+
+        distube.voices.join(memberVoiceConnection.channel).then(() => {
+            message.channel.send(`Joined ${memberVoiceConnection.channel.name}!`)
+        });
     }
 
-    public getInteraction() {
-        return {
-            "name": "join",
-            "description": "Join the voice channel"
-        }
-    }
 }

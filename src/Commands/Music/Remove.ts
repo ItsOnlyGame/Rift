@@ -1,8 +1,7 @@
-import { Message } from "discord.js";
+import { Message, MessageReaction } from "discord.js";
 import GuildSettings from "../../Guilds/GuildSettings";
+import { distube } from "../../Models/AudioManager";
 import Command from "../../Models/Command";
-import { ErelaManager } from "../../Models/LavaplayerManager";
-import MessageCtx from "../../Models/MessageCtx";
 
 export default class Remove extends Command {
     constructor() {
@@ -14,63 +13,54 @@ export default class Remove extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
-        if (ctx.guildSettings.dj_role != null) {
-            if (ctx.member.roles.cache.get(ctx.guildSettings.dj_role) == undefined) {
-                ctx.send("You are not a dj")
+    public async execute(message: Message, args: string[]): Promise<void> {
+        message.channel.send("This command is currenly disabled")
+        /*
+        const guildSettings = GuildSettings.getGuildSettings(message.guildId, message.client)
+
+        if (guildSettings.dj_role != null) {
+            if (message.member.roles.cache.get(guildSettings.dj_role) == undefined) {
+                message.channel.send("You are not a dj")
                 return 
             }
         }
         
-        const player = ErelaManager.get(ctx.channel.guild.id);
+        const queue = distube.getQueue(message)
 
-        if (player == undefined) {
-            ctx.send("Queue is empty!");
+        if (!queue) {
+            message.channel.send("Queue is empty!");
             return;
         }
 
-        if (player.queue.length == 0 && player.queue.current == undefined) {
-            ctx.send("Queue is empty!");
+        if (queue.songs.length == 0) {
+            message.channel.send("Queue is empty!");
             return;
         }
 
-        if (player.voiceChannel != ctx.member.voice.channel.id) {
-            ctx.send("You need to be in the same voice channel as I")
+        if (queue.voiceChannel.id != message.member.voice.channel.id) {
+            message.channel.send("You need to be in the same voice channel as I")
             return;
         }
 
         var deleteIndex: number = null;
-        if (ctx.args.length >= 1) {
-            deleteIndex = Number(ctx.args[0]);
+        if (args.length >= 1) {
+            deleteIndex = Number(args[0]);
             if (isNaN(deleteIndex)) {
-                ctx.send(`Not a valid index in queue (${ctx.args[0]})`)
+                message.channel.send(`Not a valid index in queue (${args[0]})`)
                 return;
             }
             deleteIndex -= 1;
         }
-        if (deleteIndex < 0 || deleteIndex >= player.queue.length) {
-            ctx.send("Invalid queue position")
+        if (deleteIndex < 0 || deleteIndex >= queue.songs.length) {
+            message.channel.send("Invalid queue position")
             return;
         }
 
-        const track = player.queue[deleteIndex];
-        ctx.send(`Removed ${track.title} from queue!`)
-        player.queue.remove(deleteIndex)
-    }
-
-    public getInteraction() {
-        return {
-            "name": "remove",
-            "description": "Remove track from queue",
-            "options": [
-              {
-                "type": 4,
-                "name": "index",
-                "description": "Remove from the queue on the index",
-                "required": true
-              }
-            ]
-          }
+        const track = queue.songs[deleteIndex];
+        message.channel.send(`Removed ${track.name} from queue!`)
+        queue.songs.slice(deleteIndex, 1)
+        console.log(queue.songs)
+        */
     }
     
 }

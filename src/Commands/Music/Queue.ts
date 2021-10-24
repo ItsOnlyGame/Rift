@@ -1,11 +1,6 @@
 import { Message } from "discord.js";
+import { distube } from "../../Models/AudioManager";
 import Command from "../../Models/Command";
-import { ErelaManager } from "../../Models/LavaplayerManager";
-import MessageCtx from "../../Models/MessageCtx";
-
-var moment = require("moment");
-var momentDurationFormatSetup = require("moment-duration-format");
-momentDurationFormatSetup(moment);
 
 export default class Queue extends Command {
     constructor() {
@@ -17,42 +12,37 @@ export default class Queue extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
-        const player = ErelaManager.get(ctx.channel.guild.id);
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const queue = distube.getQueue(message)
 
-        if (player == undefined) {
-            ctx.send("Queue is empty!");
+        if (queue == undefined) {
+            message.channel.send("Queue is empty!");
             return;
         }
 
-        if (player.queue.length == 0 && player.queue.current == undefined) {
-            ctx.send("Queue is empty!");
+        if (queue.songs.length == 0) {
+            message.channel.send("Queue is empty!");
             return;
         }
 
-        for (var times = 0; times < Math.ceil(player.queue.length / 50.0); times++) {
+        const size = 40
+        for (var times = 0; times < Math.ceil(queue.songs.length / size); times++) {
             var queueMessage = ""
 
             queueMessage += "```";
-            if (times == 0) {
-                queueMessage += `Now playing: ${player.queue.current.title} | ${moment.duration(player.queue.current.duration, "ms").format("h:*mm:ss")} \n`
-            }
 
-            for (var i = times * 50; i < (times * 50) + 50; i++) {
-                if (player.queue.length <= i) break;
-                var track = player.queue[i];
-                queueMessage += `${i+1}: ${track.title} | ${moment.duration(track.duration, "ms").format("h:*mm:ss")} \n`
+            for (var i = times * size; i < (times * size) + size; i++) {
+                if (times == 0 && i == 0) {
+                    queueMessage += `Now playing: ${queue.songs[0].name}\n`
+                    continue;
+                }
+                if (queue.songs.length <= i) break;
+                var track = queue.songs[i];
+                queueMessage += `${i+1}: ${track.name}\n`
             }
 
             queueMessage += "```";
-            ctx.send(queueMessage)
-        }
-    }
-
-    public getInteraction() {
-        return {
-            "name": "queue",
-            "description": "Get queue"
+            message.channel.send(queueMessage)
         }
     }
 }

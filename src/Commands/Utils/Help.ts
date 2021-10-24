@@ -1,8 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js'
-import getConfig from "../../Config";
+import { HexColorString, Message, MessageEmbed } from 'discord.js'
+import Config from '../../Config';
 import Command from '../../Models/Command';
-import MessageCtx from '../../Models/MessageCtx';
-const defaultColors = getConfig().defaultColors
 
 export default class Help extends Command {
     constructor() {
@@ -14,20 +12,13 @@ export default class Help extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
+    public async execute(message: Message, args: string[]): Promise<void> {
         const embed = new MessageEmbed()
-            .setAuthor('Help', ctx.member.user.avatarURL())
-            .setColor(defaultColors.success)
+            .setAuthor('Help', message.member.user.avatarURL())
+            .setColor(Config.getConfig().defaultColors.success as HexColorString)
             .setDescription(`Every command is listed under this link: \nhttps://github.com/ItsOnlyGame/Rift#commands`)
 
-        ctx.send(embed);
-    }
-
-    public getInteraction() {
-        return {
-            "name": "help",
-            "description": "Help"
-        }
+        message.channel.send({embeds: [embed]});
     }
 
 }

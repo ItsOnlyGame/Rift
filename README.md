@@ -3,28 +3,23 @@ This is a Discord bot mostly focused on music, with support for Youtube, SoundCl
 Feature suggestions and bug reports are appreciated
 
 ## Installation
-Because of the language change from Java to JavaScript the dependecies have changed. 
-Because Lavaplayer is no longer available, this bot will use lavalink which is a seperate server-side program that will have to be run beside Rift.
+### Requirement
+- Node v16 or newer
+- Python (2.6, 2.7, or 3.2+)
+- youtube-dl
+- FFmpeg
 
-### Lavalink
-- You need to have Java JRE 13 installed on your machine ([Here's a download link](https://adoptopenjdk.net/archive.html?variant=openjdk13))
-- You can download the latest Lavalink release [here](https://github.com/freyacodes/Lavalink/releases)
-- Create a file named ``application.yml`` and put it in the same folder as lavalink. 
-Add [this](https://github.com/freyacodes/Lavalink/blob/master/LavalinkServer/application.yml.example) to the file and modify the required things
-- Run it with ``java -jar Lavalink.jar``
+If the ``npm install`` doesn't work
+please take a look at [the Sodium documentation](https://www.npmjs.com/package/sodium) 
 
-### Rift
+
+### Get started
 - Clone the repo
-- Open a terminal and go to that directory
-- Run ``npm start``
+- Open a terminal in the repo directory
+- Run ``npm install``
+- Run ``npm run build``
+- To start the bot run ``npm start``
 - On the first run Rift should just create a config file and close, change token in the config and run it again
-- Default prefix for the bot is ```r!```
-
-# Slash Commands
-If you want to use slash commands, just give the bot permissions in the discord developer portal
-https://discord.com/developers/docs/interactions/slash-commands
-
-And start it up, it may take up to an hour to activate them
 
 # Commands
 I'm just assuming the prefix is default: ``r!``

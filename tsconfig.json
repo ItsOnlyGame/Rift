@@ -1,19 +1,14 @@
 {
-    "compileOnSave": false,
     "compilerOptions": {
-        "sourceMap": true,
-        "target": "es5",
-        "experimentalDecorators": true,
-        "noImplicitAny": false,
-        "strictNullChecks": false,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "outDir": "dist",
         "esModuleInterop": true,
-        "resolveJsonModule": true
+        "baseUrl": "./dist"
     },
     "exclude": [
         "node_modules"
     ],
-    "filesGlob": [
-        "src/**/*.ts",
-    ],
-    "baseUrl": "./",
+    "include": ["src"]
 }

@@ -1,7 +1,6 @@
 import { Message, Permissions } from 'discord.js'
 import GuildSettings from '../../Guilds/GuildSettings';
 import Command from '../../Models/Command';
-import MessageCtx from '../../Models/MessageCtx';
 
 export default class Prefix extends Command {
     constructor() {
@@ -13,31 +12,17 @@ export default class Prefix extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
-        if (ctx.args.length == 0) {
-            ctx.send("Current prefix is ``" + ctx.guildSettings.prefix + "``")
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const guildSettings = GuildSettings.getGuildSettings(message.guildId, message.client)
+        if (args.length == 0) {
+            message.channel.send("Current prefix is ``" + guildSettings.prefix + "``")
             return
         }
 
-        var newprefix = ctx.args[0].trim();
-        ctx.send("Prefix changed from ``" + ctx.guildSettings.prefix + "`` to ``" + newprefix + "``")
-        ctx.guildSettings.prefix = newprefix;
-        GuildSettings.saveGuildSettings(ctx.guildSettings)
-    }
-
-    public getInteraction() {
-        return {
-            "name": "volume",
-            "description": "Change volume",
-            "options": [
-                {
-                    "type": 3,
-                    "name": "prefix",
-                    "description": "New prefix",
-                    "required": false
-                }
-            ]
-        }
+        var newprefix = args[0].trim();
+        message.channel.send("Prefix changed from ``" + guildSettings.prefix + "`` to ``" + newprefix + "``")
+        guildSettings.prefix = newprefix;
+        GuildSettings.saveGuildSettings(guildSettings)
     }
 
 }

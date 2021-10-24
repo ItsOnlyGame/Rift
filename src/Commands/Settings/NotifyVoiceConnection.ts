@@ -1,7 +1,6 @@
 import { Message, Permissions } from 'discord.js'
 import GuildSettings from '../../Guilds/GuildSettings';
 import Command from '../../Models/Command';
-import MessageCtx from '../../Models/MessageCtx';
 
 export default class NotifyVoiceConnection extends Command {
     constructor() {
@@ -13,44 +12,31 @@ export default class NotifyVoiceConnection extends Command {
         )
     }
 
-    public async execute(ctx: MessageCtx): Promise<void> {
-        if (ctx.args.length == 0) {
-            ctx.send("Notify voice connection mode is ``"+ctx.guildSettings.notifyVoiceConnection+"``")
+    public async execute(message: Message, args: string[]): Promise<void> {
+        const guildSettings = GuildSettings.getGuildSettings(message.guildId, message.client)
+
+        if (args.length == 0) {
+            message.channel.send("Notify voice connection mode is ``"+guildSettings.notifyVoiceConnection+"``")
             return
         }
 
-        var newNotifyVoiceConnection = ctx.args[0].trim().toLowerCase();
+        var newNotifyVoiceConnection = args[0].trim().toLowerCase();
         if (newNotifyVoiceConnection == "true") {
-            ctx.send("Notify voice connection mode set to ``"+newNotifyVoiceConnection+"``")
-            ctx.guildSettings.notifyVoiceConnection = true
-            GuildSettings.saveGuildSettings(ctx.guildSettings)
+            message.channel.send("Notify voice connection mode set to ``"+newNotifyVoiceConnection+"``")
+            guildSettings.notifyVoiceConnection = true
+            GuildSettings.saveGuildSettings(guildSettings)
             return;
 
         } else if (newNotifyVoiceConnection == "false") {
 
-            ctx.send("Notify voice connection mode set to ``"+newNotifyVoiceConnection+"``")
-            ctx.guildSettings.notifyVoiceConnection = false
-            GuildSettings.saveGuildSettings(ctx.guildSettings)
+            message.channel.send("Notify voice connection mode set to ``"+newNotifyVoiceConnection+"``")
+            guildSettings.notifyVoiceConnection = false
+            GuildSettings.saveGuildSettings(guildSettings)
             return;
 
         }
 
-        ctx.send("Notify voice connection can only be set to true or false")
-    }
-
-    public getInteraction() {
-        return {
-            "name": "notifyvc",
-            "description": "Whether to tell if bot is (dis)connecting from/to a voice channel",
-            "options": [
-                {
-                    "type": 5,
-                    "name": "bool",
-                    "description": "New Notify Voice Connection mode",
-                    "required": false
-                }
-            ]
-        }
+        message.channel.send("Notify voice connection can only be set to true or false")
     }
 
 }
