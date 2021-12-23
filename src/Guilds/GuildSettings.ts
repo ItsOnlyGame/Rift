@@ -1,7 +1,6 @@
 import { Client, Snowflake } from "discord.js";
 import * as fs from 'fs'
-import { getLogger } from 'log4js';
-const logger = getLogger();
+import { logger } from '../index';
 
 class GuildSettings {
     /**

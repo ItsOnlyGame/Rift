@@ -1,8 +1,7 @@
 import Command from "../../Models/Command";
-import { getLogger } from 'log4js';
+import { logger } from '../../index';
 import { Message } from "discord.js";
 import GuildSettings from "../../Guilds/GuildSettings";
-const logger = getLogger();
 import { distube } from "../../Models/AudioManager";
 
 export default class Play extends Command {

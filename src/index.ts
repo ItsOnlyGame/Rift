@@ -1,21 +1,26 @@
 import * as fs from 'fs'
-import { Channel, Client, GuildChannel, Intents, VoiceChannel } from "discord.js";
+import { Client, GuildChannel, Intents } from "discord.js";
 import GuildSettings from './Guilds/GuildSettings';
 import Command from './Models/Command'
-import { configure, getLogger } from 'log4js';
+import winston from 'winston';
 import Config from './Config';
 import { distube, initDisTube } from './Models/AudioManager';
 
-const logger = getLogger();
-configure({
-    appenders: { 
-        files: { type: "dateFile", maxLogSize: 10485760, filename: "logs/out.log" },
-        console: {type: 'console' }
-    },
-    categories: { 
-        default: { appenders: ["console", "files"], level: "all" } 
-    }
+const myformat = winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(info => `${info.timestamp} [${info.level}]: ${info.message}`)
+);
+
+export const logger = winston.createLogger({
+    level: 'info',
+    format: myformat,
+    defaultMeta: { service: 'user-service' },
+    transports: [
+        new winston.transports.Console(),
+        new winston.transports.File({ filename: 'logs/out.log', level: 'debug' }),
+    ]
 });
+
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_VOICE_STATES] });
 const commands: Command[] = [];
@@ -117,5 +122,5 @@ client.on('voiceStateUpdate', (old, current) => {
     } 
 })
 
-
-client.login(Config.getConfig().token);
+const config = Config.getConfig();
+client.login(config.token);

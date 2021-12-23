@@ -1,11 +1,10 @@
 import SpotifyPlugin from "@distube/spotify";
 import { Client, HexColorString, MessageEmbed } from "discord.js";
 import DisTube from "distube";
-import { getLogger } from "log4js";
+import { logger } from '../index';
 import Config from "../Config";
 import GuildSettings from "../Guilds/GuildSettings";
 
-const logger = getLogger();
 const spotify = Config.getConfig().spotify
 
 export var distube: DisTube = null;
