@@ -1,6 +1,11 @@
 # Change Log
 
-## [3.0.0] | -.10.2021
+## 3.0.1 | 23.1.2022
+### Fixed
+- Dependency changes
+
+
+## [3.0.0] | 24.10.2021
 ### Added
 - Change music and voice connection handling to distube
 

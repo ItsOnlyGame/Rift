@@ -48,7 +48,6 @@ class GuildSettings {
             GuildSettings.saveGuildSettings(settings);
         }
 
-        Object.setPrototypeOf(settings, GuildSettings.prototype)
         return settings;
     }
 
@@ -66,7 +65,7 @@ class GuildSettings {
             if (err) {
                 logger.error(`Error writing file: ${err}`);
             } else {
-                logger.info(`File is written successfully!: ${settings.id}.json`);
+                logger.info(`File is written successfully!: '${settings.id}.json'`);
             }
         });
     }

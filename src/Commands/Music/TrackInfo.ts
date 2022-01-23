@@ -36,7 +36,7 @@ export default class TrackInfo extends Command {
 
         const embed = new MessageEmbed()
             .setColor(Config.getConfig().defaultColors.success as HexColorString)
-            .setAuthor('Info', message.member.user.avatarURL(), null)
+            .setAuthor({ name: 'Info', iconURL: message.member.user.avatarURL()})
             .addField('Title', track.name,  false)
             .addField('Authors', track.uploader.name,  false)
             .addField('Duration', `${track.duration}`,  false)

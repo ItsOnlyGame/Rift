@@ -1,4 +1,4 @@
-import { Message, MessageSelectMenu } from 'discord.js';
+import { Message, MessageSelectMenu, Permissions } from 'discord.js';
 import GuildSettings from '../../Guilds/GuildSettings';
 import { distube } from '../../Models/AudioManager';
 import Command from '../../Models/Command';
@@ -33,14 +33,19 @@ export default class Volume extends Command {
                 return;
             }
 
-            if (!queue) {
+            if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+                if (!queue) {
+                    message.channel.send("You need to be in the same voice channel as I")
+                    return;
+                }
+                
                 if (queue.voiceChannel.id != message.member.voice.channel.id) {
                     message.channel.send("You need to be in the same voice channel as I")
                     return;
                 }
             }
-            
-            queue.setVolume(newvolume)
+
+            if (queue) queue.setVolume(newvolume)
             guildSettings.volume = newvolume;
             GuildSettings.saveGuildSettings(guildSettings)
 

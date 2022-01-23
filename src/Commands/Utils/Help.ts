@@ -14,7 +14,7 @@ export default class Help extends Command {
 
     public async execute(message: Message, args: string[]): Promise<void> {
         const embed = new MessageEmbed()
-            .setAuthor('Help', message.member.user.avatarURL())
+            .setAuthor({ name: 'Help', iconURL: message.member.user.avatarURL()})
             .setColor(Config.getConfig().defaultColors.success as HexColorString)
             .setDescription(`Every command is listed under this link: \nhttps://github.com/ItsOnlyGame/Rift#commands`)
 

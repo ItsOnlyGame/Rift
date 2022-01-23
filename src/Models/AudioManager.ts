@@ -34,7 +34,7 @@ export function initDisTube(client: Client) {
         const embed = new MessageEmbed();
         
         if (song.playlist) { // First playing song
-            embed.setAuthor((queue.songs.length == 1 ? 'Playing' : 'Added to queue'), song.user.avatarURL(), song.playlist.url)
+            embed.setAuthor({ name: (queue.songs.length == 1 ? 'Playing' : 'Added to queue'), iconURL: song.user.avatarURL(), url: song.playlist.url })
 
             embed.addField('Playlist Name', song.playlist.name, true)
             embed.addField('Playlist Length', String(song.playlist.songs.length), true)
@@ -46,7 +46,7 @@ export function initDisTube(client: Client) {
             embed.setColor(Config.getConfig().defaultColors.success as HexColorString)
             embed.setThumbnail(song.thumbnail)
         } else {
-            embed.setAuthor((queue.songs.length == 1 ? 'Playing' : 'Added to queue'), song.user.avatarURL(), song.url)
+            embed.setAuthor({ name: (queue.songs.length == 1 ? 'Playing' : 'Added to queue'), iconURL: song.user.avatarURL(), url: song.url })
             embed.addField('Title', song.name, false)
             embed.addField('Duration', song.formattedDuration, false)
             embed.setColor(Config.getConfig().defaultColors.success as HexColorString)

@@ -70,6 +70,10 @@ client.on('messageCreate', async message => {
     if (!message.member) return;
 
     var guild = GuildSettings.getGuildSettings(message.guild.id, client);
+    if (!guild) {
+        message.channel.send('Creating guild config file.')
+        return;
+    }
     if (!message.content.startsWith(guild.prefix)) return;
 
     const args = message.content.slice(guild.prefix.length).split(/ +/);
