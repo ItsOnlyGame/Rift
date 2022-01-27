@@ -22,7 +22,7 @@ export default class Lyrics extends Command {
                 return;
             }
 
-            const lyrics: string = await lyricsFinder(args.join("").trim()) || 'No lyrics found!'
+            const lyrics: string = await lyricsFinder(args.join(" ").trim()) || 'No lyrics found!'
             var splits = this.splitLyrics(lyrics)
             for (var i = 0; i < splits.length; i++) {
                 var text = "```";
