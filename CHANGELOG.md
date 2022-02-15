@@ -1,8 +1,14 @@
 # Change Log
 
+## 3.0.3 | 15.2.2022
+### Fixed
+- Fixed auto leaving voice channel when left alone
+
+
 ## 3.0.2 | 27.1.2022
 ### Fixed
 - Finding lyrics with a query didn't join arguments with spaces
+
 
 ## 3.0.1 | 23.1.2022
 ### Fixed

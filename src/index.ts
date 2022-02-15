@@ -119,8 +119,7 @@ client.on('voiceStateUpdate', (old, current) => {
         const channel = current.guild.channels.cache.get(old.channelId) as GuildChannel;
         if (channel.members.size == 1) {
             if (channel.members.first().user.id == old.client.user.id) {
-                const queue = distube.getQueue(current.guild);
-                if (queue) queue.voices.leave(current.guild);
+                distube.voices.leave(old.guild)
             }
         }
     } 
