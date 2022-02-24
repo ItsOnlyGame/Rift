@@ -5,10 +5,8 @@
         "resolveJsonModule": true,
         "outDir": "dist",
         "esModuleInterop": true,
-        "baseUrl": "./dist"
+        "baseUrl": "."
     },
-    "exclude": [
-        "node_modules"
-    ],
-    "include": ["src"]
+    "exclude": ["node_modules"],
+    "include": ["src/**/*"]
 }

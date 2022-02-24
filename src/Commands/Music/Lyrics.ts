@@ -23,11 +23,12 @@ export default class Lyrics extends Command {
             }
 
             const lyrics: string = await lyricsFinder(args.join(" ").trim()) || 'No lyrics found!'
+
             var splits = this.splitLyrics(lyrics)
             for (var i = 0; i < splits.length; i++) {
                 var text = "```";
                 if (i == 0) {
-                    text += "\nLyrics for "+ args.join("").trim() + "\n\n";
+                    text += "\nLyrics for "+ args.join(" ").trim() + "\n\n";
                 } else {
                     text += "\n"
                 }
