@@ -1,6 +1,5 @@
 import { Message } from "discord.js";
 import { RepeatMode } from "distube";
-import GuildSettings from "../../Guilds/GuildSettings";
 import { distube } from "../../Models/AudioManager";
 import Command from "../../Models/Command";
 
@@ -17,7 +16,7 @@ export default class Loop extends Command {
     public async execute(message: Message, args: string[]): Promise<void> {
         const queue = distube.getQueue(message)
         
-        if (queue.repeatMode == 0) {
+        if (queue.repeatMode == RepeatMode.SONG) {
             queue.setRepeatMode(RepeatMode.DISABLED)
             message.channel.send("Looping: disabled")
 

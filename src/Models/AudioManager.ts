@@ -18,7 +18,8 @@ export function initDisTube(client: Client) {
                 clientSecret: spotify.clientSecret
             }})
         ],
-        nsfw: true
+        nsfw: true,
+        youtubeDL: false
     });
 
     distube.on('error', (channel, error) => {

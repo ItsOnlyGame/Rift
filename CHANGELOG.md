@@ -1,5 +1,14 @@
 # Change Log
 
+## 3.0.5 | 19.3.2022
+### Changed
+- Updated packages
+- Changed from youtube-dl to yt-dlp
+
+### Fixed
+- Looping should now work
+
+
 ## 3.0.4 | 24.2.2022
 ### Fixed
 - Fixed finding lyrics with a query didn't join query with spaces on the message
