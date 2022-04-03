@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.0.6 | 3.4.2022
+### Changed
+- Remove command should now be working
+
+### Fixed
+- Playing a playlist didn't send an embed
+
+
 ## 3.0.5 | 19.3.2022
 ### Changed
 - Updated packages

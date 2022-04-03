@@ -13,9 +13,7 @@ export default class Remove extends Command {
         )
     }
 
-    public async execute(message: Message, args: string[]): Promise<void> {
-        message.channel.send("This command is currenly disabled")
-        /*
+    public async execute(message: Message, args: string[]): Promise<void> {        
         const guildSettings = GuildSettings.getGuildSettings(message.guildId, message.client)
 
         if (guildSettings.dj_role != null) {
@@ -58,9 +56,7 @@ export default class Remove extends Command {
 
         const track = queue.songs[deleteIndex];
         message.channel.send(`Removed ${track.name} from queue!`)
-        queue.songs.slice(deleteIndex, 1)
-        console.log(queue.songs)
-        */
+        queue.songs.splice(deleteIndex, 1)
     }
     
 }
