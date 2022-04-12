@@ -13,10 +13,13 @@ export function initDisTube(client: Client) {
     distube = new DisTube(client,{
         searchSongs: 1,
         plugins: [
-            new SpotifyPlugin({api: {
-                clientId: spotify.clientId,
-                clientSecret: spotify.clientSecret
-            }})
+            new SpotifyPlugin({
+                api: {
+                    clientId: spotify.clientId,
+                    clientSecret: spotify.clientSecret
+                },
+                emitEventsAfterFetching: true
+            })
         ],
         nsfw: true,
         youtubeDL: false

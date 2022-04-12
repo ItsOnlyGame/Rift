@@ -1,5 +1,13 @@
 # Change Log
 
+## 3.0.7 | 12.4.2022
+### Changed
+- Updated dependencies
+
+### Fixed
+- Playlist information in the "play embed" was wrong 
+
+
 ## 3.0.6 | 3.4.2022
 ### Changed
 - Remove command should now be working

@@ -1,6 +1,6 @@
 {
     "name": "rift",
-    "version": "3.0.6",
+    "version": "3.0.7",
     "description": "This is a discord bot mainly for playing music",
     "main": "index.js",
     "scripts": {
@@ -16,26 +16,25 @@
         "@discordjs/voice": "^0.8.0",
         "@distube/spotify": "^1.2.1",
         "@distube/yt-dlp": "^1.0.2",
-        "@distube/ytdl-core": "git+https://github.com/distubejs/node-ytdl-core.git",
-        "@distube/ytpl": "git+https://github.com/distubejs/ytpl.git",
-        "@distube/ytsr": "git+https://github.com/distubejs/ytsr.git",
+        "@distube/ytpl": "^1.1.1",
+        "@distube/ytsr": "^1.1.5",
         "discord.js": "^13.6.0",
-        "distube": "^3.3.2",
+        "distube": "^3.3.3",
         "ffmpeg-static": "^5.0.0",
         "install": "^0.13.0",
-        "libsodium-wrappers": "^0.7.9",
+        "libsodium-wrappers": "^0.7.10",
         "lyrics-finder": "^21.7.0",
         "nodemon": "^2.0.15",
-        "npm": "^8.1.1",
+        "npm": "^8.6.0",
         "opusscript": "^0.0.8",
-        "ts-node": "^10.4.0",
-        "typescript": "^4.4.4",
-        "winston": "^3.3.3",
-        "youtube-dl-exec": "^2.0.8"
+        "ts-node": "^10.7.0",
+        "typescript": "^4.6.3",
+        "winston": "^3.7.2"
     },
     "devDependencies": {
         "@types/moment-duration-format": "^2.2.3",
-        "@types/node": "^17.0.21",
-        "concurrently": "^7.0.0"
+        "@types/node": "^17.0.23",
+        "concurrently": "^7.1.0",
+        "yarn-upgrade-all": "^0.7.1"
     }
 }
