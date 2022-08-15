@@ -1,6 +1,6 @@
-import { Message, MessageSelectMenu, Permissions } from 'discord.js';
+import { Message, PermissionsBitField } from 'discord.js';
 import GuildSettings from '../../Guilds/GuildSettings';
-import { distube } from '../../Models/AudioManager';
+import { distube } from '../../Utils/AudioManager';
 import Command from '../../Models/Command';
 
 export default class Volume extends Command {
@@ -33,7 +33,7 @@ export default class Volume extends Command {
                 return;
             }
 
-            if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) {
+            if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
                 if (!queue) {
                     message.channel.send("You need to be in the same voice channel as I")
                     return;

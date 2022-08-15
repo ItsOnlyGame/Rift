@@ -1,10 +1,10 @@
 import * as fs from 'fs'
-import { Client, GuildChannel, Intents } from "discord.js";
+import { Client, GuildChannel, GatewayIntentBits, Partials } from "discord.js";
 import GuildSettings from './Guilds/GuildSettings';
 import Command from './Models/Command'
 import winston from 'winston';
 import Config from './Config';
-import { distube, initDisTube } from './Models/AudioManager';
+import { distube, initDisTube } from './Utils/AudioManager';
 
 const myformat = winston.format.combine(
     winston.format.timestamp(),
@@ -22,7 +22,7 @@ export const logger = winston.createLogger({
 });
 
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_BANS, Intents.FLAGS.GUILD_INTEGRATIONS, Intents.FLAGS.GUILD_VOICE_STATES] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates] });
 const commands: Command[] = [];
 initDisTube(client)
 

@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import GuildSettings from "../../Guilds/GuildSettings";
-import { distube } from "../../Models/AudioManager";
+import { distube } from "../../Utils/AudioManager";
 import Command from "../../Models/Command";
 
 export default class Stop extends Command {

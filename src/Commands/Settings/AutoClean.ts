@@ -1,4 +1,4 @@
-import { Message, Permissions } from 'discord.js'
+import { Message, PermissionsBitField } from 'discord.js'
 import GuildSettings from '../../Guilds/GuildSettings';
 import Command from '../../Models/Command';
 
@@ -8,7 +8,7 @@ export default class AutoClean extends Command {
             "Auto Clean",
             "Automatically clean the command messages",
             ["autoclean"],
-            [Permissions.FLAGS.ADMINISTRATOR]
+            [PermissionsBitField.Flags.Administrator]
         )
     }
 

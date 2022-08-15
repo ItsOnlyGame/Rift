@@ -1,6 +1,6 @@
-import { HexColorString, Message, MessageEmbed, TextChannel } from "discord.js";
+import { EmbedBuilder, HexColorString, Message, TextChannel } from "discord.js";
 import Command from "../../Models/Command";
-import { distube } from "../../Models/AudioManager";
+import { distube } from "../../Utils/AudioManager";
 import Config from "../../Config";
 
 export default class TrackInfo extends Command {
@@ -34,13 +34,14 @@ export default class TrackInfo extends Command {
 
         const track = queue.songs[0];
 
-        const embed = new MessageEmbed()
+        const embed = new EmbedBuilder()
             .setColor(Config.getConfig().defaultColors.success as HexColorString)
             .setAuthor({ name: 'Info', iconURL: message.member.user.avatarURL()})
-            .addField('Title', track.name,  false)
-            .addField('Authors', track.uploader.name,  false)
-            .addField('Duration', `${track.duration}`,  false)
-            .addField('Url', track.url,  false)
+            .addFields([
+                { name: 'Title', value: track.name, inline: false },
+                { name: 'Duration', value: `${track.duration}`, inline: false },
+                { name: 'Url', value: track.url, inline: false }
+            ])
 
         if (track.thumbnail)
             embed.setThumbnail(track.thumbnail)

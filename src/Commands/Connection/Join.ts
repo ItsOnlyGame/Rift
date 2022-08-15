@@ -1,6 +1,6 @@
 import { getVoiceConnection } from "@discordjs/voice";
 import { Message, TextChannel } from "discord.js";
-import { distube } from "../../Models/AudioManager";
+import { distube } from "../../Utils/AudioManager";
 import Command from "../../Models/Command";
 
 export default class Join extends Command {

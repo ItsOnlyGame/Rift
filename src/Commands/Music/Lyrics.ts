@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import lyricsFinder from 'lyrics-finder';
-import { distube } from '../../Models/AudioManager';
+import { distube } from '../../Utils/AudioManager';
 import Command from "../../Models/Command";
 
 export default class Lyrics extends Command {

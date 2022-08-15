@@ -1,4 +1,4 @@
-import { Message, Permissions } from 'discord.js'
+import { Message, PermissionsBitField } from 'discord.js'
 import GuildSettings from '../../Guilds/GuildSettings';
 import Command from '../../Models/Command';
 
@@ -8,7 +8,7 @@ export default class NotifyVoiceConnection extends Command {
             "Notify Voice Connection",
             "Whether to tell if bot is (dis)connecting from/to a voice channel",
             ["notifyvc"],
-            [Permissions.FLAGS.ADMINISTRATOR]
+            [PermissionsBitField.Flags.Administrator]
         )
     }
 

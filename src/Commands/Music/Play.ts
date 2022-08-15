@@ -2,7 +2,7 @@ import Command from "../../Models/Command";
 import { logger } from '../../index';
 import { Message, TextChannel } from "discord.js";
 import GuildSettings from "../../Guilds/GuildSettings";
-import { distube } from "../../Models/AudioManager";
+import { distube } from "../../Utils/AudioManager";
 
 export default class Play extends Command {
     constructor() {
@@ -34,7 +34,7 @@ export default class Play extends Command {
 
         var query = args.join(' ').trim();
         logger.info(`Searching with query: ${query}`)
-        distube.play(message.member.voice.channel, query, { message: message, textChannel: (message.channel as TextChannel), member: message.member })
+        distube.play(message.member.voice.channel, query, { message: message, textChannel: (message.channel as TextChannel), member: message.member }).catch(error => console.log(error))
     }
 
     private isURL(str: string) {

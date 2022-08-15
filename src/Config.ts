@@ -35,7 +35,7 @@ export default class Config {
         }
     
         if (!fs.existsSync('./config/config.json')) {
-            fs.writeFileSync('./config/config.json', JSON.stringify(defaultConfig))
+            fs.writeFileSync('./config/config.json', JSON.stringify(defaultConfig, null, "\t"))
             throw "Please go fill out the config file!"
         }
     
