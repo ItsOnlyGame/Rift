@@ -1,29 +1,31 @@
-import { Message } from "discord.js";
-import { RepeatMode } from "distube";
-import { distube } from "../../Utils/AudioManager";
-import Command from "../../Models/Command";
+import { CommandInteraction, Message, SlashCommandBuilder } from 'discord.js'
+import { RepeatMode } from 'distube'
+import { distube } from '../../Utils/AudioManager'
+import Command from '../../Models/Command'
 
 export default class Loop extends Command {
-    constructor() {
-        super(
-            "Loop", 
-            "Loop current track",
-            ["loop", "l"],
-            null
-        )
-    }
+	constructor() {
+		super(
+			new SlashCommandBuilder()
+				.setName('loop')
+				.setDescription('Loop current track')
+				.addBooleanOption((option) =>
+					option.setName('repeat-mode').setDescription('Whether the player should loop the current track').setRequired(true)
+				)
+		)
+	}
+	
+	public async execute(interaction: CommandInteraction): Promise<void> {
+		const queue = distube.getQueue(interaction.guildId)
+		const loop = interaction.options.get('repeat-mode').value as boolean
 
-    public async execute(message: Message, args: string[]): Promise<void> {
-        const queue = distube.getQueue(message)
-        
-        if (queue.repeatMode == RepeatMode.SONG) {
-            queue.setRepeatMode(RepeatMode.DISABLED)
-            message.channel.send("Looping: disabled")
+		if (loop) {
+			queue.setRepeatMode(RepeatMode.SONG)
+			interaction.editReply('Enabled looping')
+			return
+		}
 
-        } else {
-            queue.setRepeatMode(RepeatMode.SONG)
-            message.channel.send("Looping: enabled")
-        }
-        
-    }
+		queue.setRepeatMode(RepeatMode.DISABLED)
+		interaction.editReply('Disabled looping')
+	}
 }

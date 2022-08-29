@@ -1,45 +1,54 @@
 import * as fs from 'fs'
-import { Client, GuildChannel, GatewayIntentBits, Partials } from "discord.js";
-import GuildSettings from './Guilds/GuildSettings';
+import { Client, GuildChannel, GatewayIntentBits, REST, Routes } from 'discord.js'
 import Command from './Models/Command'
-import winston from 'winston';
-import Config from './Config';
-import { distube, initDisTube } from './Utils/AudioManager';
+import winston from 'winston'
+import { distube, initDisTube } from './Utils/AudioManager'
+import { getConfig, saveConfig } from './Config'
+
+const config = getConfig()
+const LOAD_SLASH_COMMANDS = config.REFRESH_SLASH_COMMANDS
 
 const myformat = winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.printf(info => `${info.timestamp} [${info.level}]: ${info.message}`)
-);
+	winston.format.timestamp(),
+	winston.format.printf((info) => `${info.timestamp} [${info.level}]: ${info.message}`)
+)
 
 export const logger = winston.createLogger({
-    level: 'info',
-    format: myformat,
-    defaultMeta: { service: 'user-service' },
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'logs/out.log', level: 'debug' }),
-    ]
-});
+	level: 'info',
+	format: myformat,
+	defaultMeta: { service: 'user-service' },
+	transports: [new winston.transports.Console(), new winston.transports.File({ filename: 'logs/out.log', level: 'debug' })]
+})
 
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates] });
-const commands: Command[] = [];
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.DirectMessages,
+		GatewayIntentBits.GuildVoiceStates,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMembers
+	]
+})
+const commands: Map<string, Command> = new Map<string, Command>()
 initDisTube(client)
 
 /**
  * Loads every command from commands
- * @param {string} path 
+ * @param {string} path
  */
 async function loadCommandsFromDir(path: string) {
-    const content = fs.readdirSync(path);
+	const content = fs.readdirSync(path)
 
-    var ext = process.env.NODE_ENV == 'development' ? '.ts' : '.js'
+	var ext = process.env.NODE_ENV == 'development' ? '.ts' : '.js'
 
+	
     for (var file of content) {
         if (file.endsWith(ext)) {
             const ICommand = await import(`${path.replace("./src", ".").replace("./dist", ".")}/${file}`);
             const command: Command = new ICommand.default
-            commands.push(command);
+            commands.set(command.data.name, command);
 
         } else if (file.endsWith('.js.map')) {
             continue
@@ -49,81 +58,67 @@ async function loadCommandsFromDir(path: string) {
     }
 }
 
-
 client.once('ready', async () => {
-    var ext = process.env.NODE_ENV == 'development' ? 'src' : 'dist'
-    await loadCommandsFromDir('./'+ext+'/Commands');
-    logger.info('Rift is ready!');
-});
+	var ext = process.env.NODE_ENV == 'development' ? 'src' : 'dist'
+	await loadCommandsFromDir('./' + ext + '/Commands')
 
-client.once('reconnecting', () => {
-    logger.info('Reconnecting!');
-});
+	if (LOAD_SLASH_COMMANDS) {
+		const rest = new REST({ version: '10' }).setToken(config.token)
+		try {
+			console.log('Started refreshing application (/) commands.')
 
-client.once('disconnect', () => {
-    logger.info('Disconnect!');
-});
-
-client.on('messageCreate', async message => {
-    if (message.author.bot) return;
-    if (!message.guild) return;
-    if (!message.member) return;
-
-    var guild = GuildSettings.getGuildSettings(message.guild.id, client);
-    if (!guild) {
-        message.channel.send('Creating guild config file.')
-        return;
-    }
-    if (!message.content.startsWith(guild.prefix)) return;
-
-    const args = message.content.slice(guild.prefix.length).split(/ +/);
-    const commandName = args.shift().toLowerCase();    
-    const command = commands.filter(c => c.aliases != undefined).filter(c => c.aliases.includes(commandName))[0];
-
-    if (command == undefined) {
-        if (commandName == "") return;
-        message.channel.send(`Command ${commandName} doesn't exist!`)
-        return;
-    }
-
-
-    if (command.permissionRequired != null) {
-        for (const perm of command.permissionRequired) {
-            if (!message.member.permissions.has(perm, true)) {
-                message.channel.send("You don't have the required permissions to execute this command!");
-                return;
+            // Delete all slash commands
+            const promises = [];
+            const data = await rest.get(Routes.applicationCommands(client.user.id)) as any[]
+            for (const command of data) {
+                const deleteUrl = `${Routes.applicationCommands(client.user.id)}/${command.id}`;
+                promises.push(rest.delete(deleteUrl as any));
             }
-        }
-    }
+            await Promise.all(promises);
+            
+            // Add all slash commands
+			await rest.put(Routes.applicationCommands(client.user.id), {
+				body: Array.from(commands.values()).map((value) => value.data.toJSON())
+			})
+            
+			console.log('Successfully reloaded application (/) commands.')
+		} catch (error) {
+			console.error(error)
+		}
 
-    try {
-        command.execute(message, args).then(() => {
-            if (guild.autoclean) {
-                if (command.name != "Delete") {
-                    setTimeout(() => message.delete(), 3000)
-                }
-            }
-        }).catch();
-    } catch (error) {
-        message.channel.send('There was an error trying to execute that command!');
-        message.channel.send(error)
-        message.channel.send('If this error persists, please report it on github \nhttps://github.com/ItsOnlyGame/Rift/issues')
-        logger.error(error);
-    }
+        config.REFRESH_SLASH_COMMANDS = false
+        saveConfig(config)
+	}
 
-});
-
-
-client.on('voiceStateUpdate', (old, current) => {
-    if (old.channelId != null) {
-        const channel = current.guild.channels.cache.get(old.channelId) as GuildChannel;
-        if (channel.members.size == 1) {
-            if (channel.members.first().user.id == old.client.user.id) {
-                distube.voices.leave(old.guild)
-            }
-        }
-    } 
+	logger.info('Rift is ready!')
 })
 
-const config = Config.getConfig();
-client.login(config.token);
+client.once('reconnecting', () => {
+	logger.info('Reconnecting!')
+})
+
+client.once('disconnect', () => {
+	logger.info('Disconnect!')
+})
+
+client.on('voiceStateUpdate', (old, current) => {
+	if (old.channelId != null) {
+		const channel = current.guild.channels.cache.get(old.channelId) as GuildChannel
+		const botAmount = channel.members.filter((member) => member.user.bot).size
+		if (channel.members.size - botAmount == 0) {
+			distube.voices.leave(old.guild)
+		}
+	}
+})
+
+client.on('interactionCreate', async (interaction) => {
+	if (!interaction.isCommand()) return
+
+	const command = commands.get(interaction.commandName)
+	if (!command) interaction.reply('Not a valid command')
+
+	await interaction.deferReply()
+	await command.execute(interaction)
+})
+
+client.login(config.token)

@@ -1,45 +1,44 @@
-import { Message } from "discord.js";
-import GuildSettings from "../../Guilds/GuildSettings";
-import { distube } from "../../Utils/AudioManager";
-import Command from "../../Models/Command";
+import { CacheType, CommandInteraction, Message, SlashCommandBuilder } from 'discord.js'
+import GuildSettings from '../../Guilds/GuildSettings'
+import { distube } from '../../Utils/AudioManager'
+import Command from '../../Models/Command'
 
 export default class ClearQueue extends Command {
-    constructor() {
-        super(
-            "Clear Queue", 
-            "Clears the queue",
-            ["clearqueue", "clear"],
-            null
-        )
-    }
+	constructor() {
+		super(new SlashCommandBuilder().setName('clearqueue').setDescription('Clears the queue'))
+	}
 
-    public async execute(message: Message, args: string[]): Promise<void> {
-        const guildSettings = GuildSettings.getGuildSettings(message.guildId, message.client)
-        const queue = distube.getQueue(message)
+	public async execute(interaction: CommandInteraction): Promise<void> {
+		const guildSettings = GuildSettings.getGuildSettings(interaction.guildId, interaction.client)
+		const queue = distube.getQueue(interaction.guildId)
 
-        if (guildSettings.dj_role != null) {
-            if (message.member.roles.cache.get(guildSettings.dj_role) == undefined) {
-                message.channel.send("You are not a dj")
-                return;
-            }
-        }
+		if (guildSettings.dj_role != null) {
+            const roles = interaction.member.roles as string[]
+            
+			if (roles.includes(guildSettings.dj_role) == undefined) {
+                interaction.editReply('You are not a dj')
+				return
+			}
+		}
 
-        if (queue == null) {
-            message.channel.send("Queue is empty!");
-            return;
-        }
+		if (queue == null) {
+			interaction.editReply('Queue is empty!')
+			return
+		}
 
-        if (queue.songs.length == 0) {
-            message.channel.send("Queue is empty!");
-            return;
-        }
+		if (queue.songs.length == 0) {
+			interaction.editReply('Queue is empty!')
+			return
+		}
 
-        if (queue.voiceChannel.id != message.member.voice.channel.id) {
-            message.channel.send("You need to be in the same voice channel as I")
-            return;
-        }
+        const member = interaction.guild.members.cache.find(user => user.id == interaction.member.user.id)
 
-        queue.songs.slice(1)
-        message.channel.send("Queue cleared!");
-    }
+		if (queue.voiceChannel.id != member.voice.channel.id) {
+			interaction.editReply('You need to be in the same voice channel as I')
+			return
+		}
+
+		queue.songs.slice(1)
+		interaction.editReply('Queue cleared!')
+	}
 }

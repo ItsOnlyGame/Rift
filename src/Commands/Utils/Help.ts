@@ -1,24 +1,18 @@
-import { HexColorString, Message, EmbedBuilder } from 'discord.js'
-import Config from '../../Config';
-import Command from '../../Models/Command';
+import { HexColorString, EmbedBuilder, SlashCommandBuilder, CommandInteraction } from 'discord.js'
+import { getConfig } from '../../Config'
+import Command from '../../Models/Command'
 
 export default class Help extends Command {
-    constructor() {
-        super(
-            "Help",
-            "Help",
-            ["help"],
-            null
-        )
-    }
+	constructor() {
+		super(new SlashCommandBuilder().setName('help').setDescription('Gives help about this bots functions'))
+	}
 
-    public async execute(message: Message, args: string[]): Promise<void> {
-        const embed = new EmbedBuilder()
-            .setAuthor({ name: 'Help', iconURL: message.member.user.avatarURL()})
-            .setColor(Config.getConfig().defaultColors.success as HexColorString)
-            .setDescription(`Every command is listed under this link: \nhttps://github.com/ItsOnlyGame/Rift#commands`)
+	public async execute(interaction: CommandInteraction): Promise<void> {
+		const embed = new EmbedBuilder()
+			.setAuthor({ name: 'Help' })
+			.setColor(getConfig().defaultColors.success as HexColorString)
+			.setDescription(`Every command is listed under this link: \nhttps://github.com/ItsOnlyGame/Rift#commands`)
 
-        message.channel.send({embeds: [embed]});
-    }
-
+		interaction.editReply({ embeds: [embed] })
+	}
 }

@@ -2,13 +2,20 @@ import SpotifyPlugin from '@distube/spotify'
 import { Client, EmbedBuilder, HexColorString } from 'discord.js'
 import DisTube from 'distube'
 import { logger } from '../index'
-import Config from '../Config'
+import { getConfig } from '../Config'
 import GuildSettings from '../Guilds/GuildSettings'
 import { YtDlpPlugin } from '@distube/yt-dlp'
+import { Player } from 'discord-player'
+import TrackMetadata from 'src/Models/TrackMetadata'
 
-const spotify = Config.getConfig().spotify
+const spotify = getConfig().spotify
 
 export var distube: DisTube = null
+
+export let player: Player
+export function initPlayer(client: Client) {
+    player = new Player(client)
+} 
 
 export function initDisTube(client: Client) {
 	distube = new DisTube(client, {
@@ -37,8 +44,12 @@ export function initDisTube(client: Client) {
 	})
 
 	distube.on('addList', (queue, playlist) => {
+        const interaction = (playlist.metadata as TrackMetadata).interaction
+
 		const embed = new EmbedBuilder()
 		const song = playlist.songs[0]
+
+        playlist.metadata
 
 		embed.setAuthor({ name: queue.songs.length == 1 ? 'Playing' : 'Added to queue', iconURL: song.user.avatarURL(), url: song.playlist.url })
 
@@ -51,13 +62,15 @@ export function initDisTube(client: Client) {
 			{ name: 'Track duration', value: song.formattedDuration, inline: false }
 		])
 
-		embed.setColor(Config.getConfig().defaultColors.success as HexColorString)
+		embed.setColor(getConfig().defaultColors.success as HexColorString)
 		embed.setThumbnail(song.thumbnail)
 
-		queue.textChannel.send({ embeds: [embed] })
+		interaction.followUp({ embeds: [embed] })
 	})
 
 	distube.on('addSong', (queue, song) => {
+        const interaction = (song.metadata as TrackMetadata).interaction
+
 		const embed = new EmbedBuilder()
 
 		embed.setAuthor({ name: queue.songs.length == 1 ? 'Playing' : 'Added to queue', iconURL: song.user.avatarURL(), url: song.url })
@@ -65,9 +78,9 @@ export function initDisTube(client: Client) {
 			{ name: 'Title', value: song.name, inline: false },
 			{ name: 'Duration', value: song.formattedDuration, inline: false }
 		])
-		embed.setColor(Config.getConfig().defaultColors.success as HexColorString)
+		embed.setColor(getConfig().defaultColors.success as HexColorString)
 		embed.setThumbnail(song.thumbnail)
 
-		queue.textChannel.send({ embeds: [embed] })
+		interaction.editReply({ embeds: [embed] })
 	})
 }

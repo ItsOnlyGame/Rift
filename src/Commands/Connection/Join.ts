@@ -1,44 +1,39 @@
-import { getVoiceConnection } from "@discordjs/voice";
-import { Message, TextChannel } from "discord.js";
-import { distube } from "../../Utils/AudioManager";
-import Command from "../../Models/Command";
+import { getVoiceConnection } from '@discordjs/voice'
+import { CommandInteraction, Message, SlashCommandBuilder, TextChannel } from 'discord.js'
+import { distube } from '../../Utils/AudioManager'
+import Command from '../../Models/Command'
 
 export default class Join extends Command {
-    constructor() {
-        super(
-            "Join", 
-            "Join the voice channel",
-            ["join", "connect", "c"],
-            null
-        )
-    }
+	constructor() {
+		super(new SlashCommandBuilder().setName('join').setDescription('Join the voice channel'))
+	}
 
-    public async execute(message: Message, args: string[]): Promise<void> {
-        const memberVoiceConnection = message.member.voice;
-        
-        if (!memberVoiceConnection) {
-            message.channel.send('You have to be in a voice channel!')
-            return;
-        }
+	public async execute(interaction: CommandInteraction): Promise<void> {
+        const member = interaction.guild.members.cache.find((user) => user.id == interaction.member.user.id)
+		const memberVoiceConnection = member.voice
 
-        if (!memberVoiceConnection.channel) {
-            message.channel.send('You have to be in a voice channel!')
-            return;
-        }
-    
-        var connection = getVoiceConnection((message.channel as TextChannel).guildId)
-        
-        if (connection != null) {
-            if (connection.joinConfig.channelId != memberVoiceConnection.channel.id) {
-                message.channel.send('Currently connected to another voice channel!')
-                return;
-            }
-            return null;
-        } 
+		if (!memberVoiceConnection) {
+			interaction.editReply('You have to be in a voice channel!')
+			return
+		}
 
-        distube.voices.join(memberVoiceConnection.channel).then(() => {
-            message.channel.send(`Joined ${memberVoiceConnection.channel.name}!`)
-        });
-    }
+		if (!memberVoiceConnection.channel) {
+			interaction.editReply('You have to be in a voice channel!')
+			return
+		}
 
+		var connection = getVoiceConnection((interaction.channel as TextChannel).guildId)
+
+		if (connection != null) {
+			if (connection.joinConfig.channelId != memberVoiceConnection.channel.id) {
+				interaction.editReply('Currently connected to another voice channel!')
+				return
+			}
+			return null
+		}
+
+		distube.voices.join(memberVoiceConnection.channel).then(() => {
+			interaction.editReply(`Joined ${memberVoiceConnection.channel.name}!`)
+		})
+	}
 }

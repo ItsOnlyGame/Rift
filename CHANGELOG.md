@@ -1,6 +1,26 @@
 # Change Log
 
-## 3.0.7 | 12.4.2022
+## [4.0.0] | 29.8.2022
+### Added
+- Slash commands can now be reloaded with a config variable change
+
+### Changed
+- Normal commands have been switched to slash commands
+- Updated dependencies
+
+### Removed
+- AutoClean has been removed
+- NotifyVoiceConnection has been removed
+- Prefix has been removed because its no longer needed
+
+
+## [3.1.0] | 15.8.2022
+### Changed
+- Updated dependencies
+- Changed file location
+
+
+## [3.0.7] | 12.4.2022
 ### Changed
 - Updated dependencies
 
@@ -8,7 +28,7 @@
 - Playlist information in the "play embed" was wrong 
 
 
-## 3.0.6 | 3.4.2022
+## [3.0.6] | 3.4.2022
 ### Changed
 - Remove command should now be working
 
@@ -16,7 +36,7 @@
 - Playing a playlist didn't send an embed
 
 
-## 3.0.5 | 19.3.2022
+## [3.0.5] | 19.3.2022
 ### Changed
 - Updated packages
 - Changed from youtube-dl to yt-dlp
@@ -25,22 +45,22 @@
 - Looping should now work
 
 
-## 3.0.4 | 24.2.2022
+## [3.0.4] | 24.2.2022
 ### Fixed
 - Fixed finding lyrics with a query didn't join query with spaces on the message
 
 
-## 3.0.3 | 15.2.2022
+## [3.0.3] | 15.2.2022
 ### Fixed
 - Fixed auto leaving voice channel when left alone
 
 
-## 3.0.2 | 27.1.2022
+## [3.0.2] | 27.1.2022
 ### Fixed
 - Finding lyrics with a query didn't join query with spaces when searching
 
 
-## 3.0.1 | 23.1.2022
+## [3.0.1] | 23.1.2022
 ### Fixed
 - Dependency changes
 

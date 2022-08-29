@@ -1,29 +1,21 @@
-import { Message } from "discord.js";
+import { CacheType, ChatInputCommandInteraction, Message, MessageContextMenuCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder, UserContextMenuCommandInteraction } from 'discord.js'
 
 export default abstract class Command {
 
-    public name: string;
-    public description: string;
-    public aliases: Array<string>;
-    public permissionRequired: bigint[];
+	public data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">
 
-    /**
-     * 
-     * @param name Name of the command
-     * @param description Description of the command
-     * @param aliases Aliases that the command uses, first one fill be used for discord interactions
-     * @param permissionRequired Permissions required to execute the command
-     */
-    constructor(name: string, description: string, aliases: Array<string>, permissionRequired: bigint[]) {
-        this.name = name;
-        this.description = description;
-        this.aliases = aliases;
-        this.permissionRequired = permissionRequired;
-    }
+	constructor(data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">) {
+        this.data = data
+	}
 
-    /**
-     * Executes the command
-     * @param {MessageCtx} ctx Message Context Object 
-     */
-    public abstract execute(message: Message, args: string[]): Promise<void>;
+	/**
+	 * Executes the command
+	 * @param interaction Message Context Object
+	 */
+	public abstract execute(
+		interaction:
+			| ChatInputCommandInteraction<CacheType>
+			| MessageContextMenuCommandInteraction<CacheType>
+			| UserContextMenuCommandInteraction<CacheType>
+	): Promise<void>
 }

@@ -1,48 +1,52 @@
-import Command from "../../Models/Command";
-import { logger } from '../../index';
-import { Message, TextChannel } from "discord.js";
-import GuildSettings from "../../Guilds/GuildSettings";
-import { distube } from "../../Utils/AudioManager";
+import Command from '../../Models/Command'
+import { logger } from '../../index'
+import { CommandInteraction, Message, SlashCommandBuilder, TextChannel } from 'discord.js'
+import GuildSettings from '../../Guilds/GuildSettings'
+import { distube } from '../../Utils/AudioManager'
 
 export default class Play extends Command {
-    constructor() {
-        super(
-            "Play", 
-            "Play track(s)",
-            ["play", "p"],
-            null
-        )
-    }
+	constructor() {
+		super(
+			new SlashCommandBuilder()
+				.setName('play')
+				.setDescription('Play track(s)')
+				.addStringOption((option) => option.setName('link-or-query').setDescription('Link or search query to play a track').setRequired(true))
+		)
+	}
 
-    public async execute(message: Message, args: string[]): Promise<void> {
-        const guildSettings = GuildSettings.getGuildSettings(message.guildId, message.client)
+	public async execute(interaction: CommandInteraction): Promise<void> {
+		const guildSettings = GuildSettings.getGuildSettings(interaction.guildId, interaction.client)
 
-        if (guildSettings.dj_role != null) {
-            if (message.member.roles.cache.get(guildSettings.dj_role) == undefined) {
-                message.channel.send("You are not a dj")
-                return
-            }
-        }
-        if (!message.member.voice.channel) {
-            message.channel.send("you need to join a voice channel.");
-            return
-        } 
-        if (!args.length) {
-            message.channel.send("you need to give me a URL or a search term.");
-            return 
-        }
+		if (guildSettings.dj_role != null) {
+			const roles = interaction.member.roles as string[]
 
-        var query = args.join(' ').trim();
-        logger.info(`Searching with query: ${query}`)
-        distube.play(message.member.voice.channel, query, { message: message, textChannel: (message.channel as TextChannel), member: message.member }).catch(error => console.log(error))
-    }
+			if (roles.includes(guildSettings.dj_role) == undefined) {
+				interaction.editReply('You are not a dj')
+				return
+			}
+		}
 
-    private isURL(str: string) {
-        try {
-            new URL(str);
-        } catch (_) {
-            return false;  
-        }
-        return true
-    }
+		const member = interaction.guild.members.cache.find((user) => user.id == interaction.member.user.id)
+
+		if (!member.voice.channel) {
+			interaction.editReply('you need to join a voice channel.')
+			return
+		}
+
+		const query = interaction.options.get('link-or-query')?.value as string
+
+		if (!query) {
+			interaction.editReply('you need to give me a URL or a search term.')
+			return
+		}
+
+		logger.info(`Searching with query: ${query}`)
+        
+        interaction.editReply(`Searching for '${query}'`)
+		distube
+			.play(member.voice.channel, query, { metadata: { interaction }, textChannel: interaction.channel as TextChannel, member })
+			.then((data) => console.log(data))
+            .catch(error => interaction.editReply('Something went wrong!'))
+
+	}
 }
