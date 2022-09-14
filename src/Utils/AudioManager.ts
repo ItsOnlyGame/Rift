@@ -5,21 +5,14 @@ import { logger } from '../index'
 import { getConfig } from '../Config'
 import GuildSettings from '../Guilds/GuildSettings'
 import { YtDlpPlugin } from '@distube/yt-dlp'
-import { Player } from 'discord-player'
 import TrackMetadata from 'src/Models/TrackMetadata'
 
 const spotify = getConfig().spotify
 
 export var distube: DisTube = null
 
-export let player: Player
-export function initPlayer(client: Client) {
-    player = new Player(client)
-} 
-
 export function initDisTube(client: Client) {
 	distube = new DisTube(client, {
-
 		searchSongs: 1,
 		plugins: [
             new YtDlpPlugin({ update: false }),
@@ -65,7 +58,7 @@ export function initDisTube(client: Client) {
 		embed.setColor(getConfig().defaultColors.success as HexColorString)
 		embed.setThumbnail(song.thumbnail)
 
-		interaction.followUp({ embeds: [embed] })
+		interaction.editReply({ embeds: [embed], content: '' })
 	})
 
 	distube.on('addSong', (queue, song) => {
@@ -81,6 +74,6 @@ export function initDisTube(client: Client) {
 		embed.setColor(getConfig().defaultColors.success as HexColorString)
 		embed.setThumbnail(song.thumbnail)
 
-		interaction.editReply({ embeds: [embed] })
+		interaction.editReply({ embeds: [embed], content: '' })
 	})
 }

@@ -12,7 +12,9 @@ interface Config {
         clientSecret: string,
         countryCode: string
     },
-    REFRESH_SLASH_COMMANDS: boolean
+    REFRESH_SLASH_COMMANDS: boolean,
+    LOAD_SLASH_COMMANDS_GUILD: boolean,
+    GUILD_SLASH_COMMAND_ID: string
 }
 
 const defaultConfig: Config = {
@@ -27,7 +29,9 @@ const defaultConfig: Config = {
         clientSecret: null,
         countryCode: null,
     },
-    REFRESH_SLASH_COMMANDS: true
+    REFRESH_SLASH_COMMANDS: true,
+    LOAD_SLASH_COMMANDS_GUILD: false,
+    GUILD_SLASH_COMMAND_ID: ""
 }
 
 export function getConfig(): Config {

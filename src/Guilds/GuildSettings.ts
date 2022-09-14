@@ -13,6 +13,7 @@ class GuildSettings {
     public id: Snowflake;
     public dj_role: string;
     public volume: number;
+    public autoRoles: string[]
 
     constructor(id: Snowflake, client: Client) {
         const guild = client.guilds.cache.get(id);
@@ -22,6 +23,7 @@ class GuildSettings {
         this.id = id;
         this.dj_role = null;
         this.volume = 50;
+        this.autoRoles = []
     }
 
     /**

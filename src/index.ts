@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { Client, GuildChannel, GatewayIntentBits, REST, Routes } from 'discord.js'
+import { Client, GuildChannel, GatewayIntentBits, REST, Routes, ActivityType } from 'discord.js'
 import Command from './Models/Command'
 import winston from 'winston'
 import { distube, initDisTube } from './Utils/AudioManager'
@@ -7,6 +7,8 @@ import { getConfig, saveConfig } from './Config'
 
 const config = getConfig()
 const LOAD_SLASH_COMMANDS = config.REFRESH_SLASH_COMMANDS
+const LOAD_SLASH_COMMANDS_GUILD = config.LOAD_SLASH_COMMANDS_GUILD
+const LOAD_SLASH_COMMANDS_GUILD_ID = config.GUILD_SLASH_COMMAND_ID
 
 const myformat = winston.format.combine(
 	winston.format.timestamp(),
@@ -58,39 +60,85 @@ async function loadCommandsFromDir(path: string) {
     }
 }
 
+/**
+* Loads every command to discord as slash commands 
+*/
+async function loadSlashCommands() {
+    const rest = new REST({ version: '10' }).setToken(config.token)
+    try {
+        logger.info('Started refreshing application (/) commands.')
+
+        // Delete all slash commands
+        const promises = [];
+        const data = await rest.get(Routes.applicationCommands(client.user.id)) as any[]
+        for (const command of data) {
+            const deleteUrl = `${Routes.applicationCommands(client.user.id)}/${command.id}`;
+            promises.push(rest.delete(deleteUrl as any));
+        }
+        await Promise.all(promises);
+        
+        // Add all slash commands
+        await rest.put(Routes.applicationCommands(client.user.id), {
+            body: Array.from(commands.values()).map((value) => value.data.toJSON())
+        })
+        
+        
+        logger.info('Successfully reloaded application (/) commands.')
+    } catch (error) {
+        logger.error(error)
+    }
+
+    config.REFRESH_SLASH_COMMANDS = false
+    saveConfig(config)
+}
+
+
+/**
+* Loads every command to discord as slash commands 
+*/
+async function loadSlashCommandsGuild(guildId: string) {
+    const rest = new REST({ version: '10' }).setToken(config.token)
+    try {
+        logger.info(`Started refreshing application (/) commands for ${guildId}.`)
+
+        // Delete all slash commands
+        const promises = [];
+        const data = await rest.get(Routes.applicationGuildCommands(client.user.id, guildId)) as any[]
+        for (const command of data) {
+            const deleteUrl = `${Routes.applicationGuildCommands(client.user.id, guildId)}/${command.id}`;
+            promises.push(rest.delete(deleteUrl as any));
+        }
+        await Promise.all(promises);
+        
+        const commandArray = Array.from(commands.values())
+        // Add all slash commands
+        await rest.put(Routes.applicationGuildCommands(client.user.id, guildId), {
+            body: commandArray.map((value) => {
+                console.log(value.data)
+                return value.data.toJSON()
+            })
+        })
+        
+        
+        logger.info(`Successfully reloaded application (/) commands for ${guildId}.`)
+    } catch (error) {
+        logger.error(error)
+    }
+}
 client.once('ready', async () => {
 	var ext = process.env.NODE_ENV == 'development' ? 'src' : 'dist'
 	await loadCommandsFromDir('./' + ext + '/Commands')
 
-	if (LOAD_SLASH_COMMANDS) {
-		const rest = new REST({ version: '10' }).setToken(config.token)
-		try {
-			console.log('Started refreshing application (/) commands.')
+    if (LOAD_SLASH_COMMANDS) {
+        await loadSlashCommands()
+    }
 
-            // Delete all slash commands
-            const promises = [];
-            const data = await rest.get(Routes.applicationCommands(client.user.id)) as any[]
-            for (const command of data) {
-                const deleteUrl = `${Routes.applicationCommands(client.user.id)}/${command.id}`;
-                promises.push(rest.delete(deleteUrl as any));
-            }
-            await Promise.all(promises);
-            
-            // Add all slash commands
-			await rest.put(Routes.applicationCommands(client.user.id), {
-				body: Array.from(commands.values()).map((value) => value.data.toJSON())
-			})
-            
-			console.log('Successfully reloaded application (/) commands.')
-		} catch (error) {
-			console.error(error)
-		}
-
-        config.REFRESH_SLASH_COMMANDS = false
-        saveConfig(config)
-	}
+    if (LOAD_SLASH_COMMANDS_GUILD) {
+        await loadSlashCommandsGuild(LOAD_SLASH_COMMANDS_GUILD_ID)
+    }
 
 	logger.info('Rift is ready!')
+    client.user.setActivity('/play', { type: ActivityType.Listening })
 })
 
 client.once('reconnecting', () => {

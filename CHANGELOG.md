@@ -1,5 +1,20 @@
 # Change Log
 
+## [4.1.0] | 14.09.2022
+### Added
+- A presence was added. 
+- Added more comments
+- Added auto roles (Automatically give roles on member join)
+- Easier slash command debugging
+
+### Changed
+- Updated dependencies
+
+### Fixed
+- Some previous entries in this file were fixed. (Missing version changes)
+- Spotify links should now work
+
+
 ## [4.0.0] | 29.8.2022
 ### Added
 - Slash commands can now be reloaded with a config variable change
@@ -12,6 +27,9 @@
 - AutoClean has been removed
 - NotifyVoiceConnection has been removed
 - Prefix has been removed because its no longer needed
+
+### Fixed
+- Some previous entries in this file were fixed. (Missing version changes)
 
 
 ## [3.1.0] | 15.8.2022

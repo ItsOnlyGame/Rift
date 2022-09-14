@@ -19,7 +19,6 @@ export default class Lyrics extends Command {
 		const queue = distube.getQueue(interaction.guildId)
 
         let trackName = interaction.options.get('track-name')?.value
-        console.log(trackName)
         if (trackName) {
 			const lyrics: string = (await lyricsFinder(trackName)) || 'No lyrics found!'
             interaction.editReply( '```' + 'Lyrics for ' + trackName + '```')

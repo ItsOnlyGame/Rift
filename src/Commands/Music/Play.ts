@@ -45,8 +45,11 @@ export default class Play extends Command {
         interaction.editReply(`Searching for '${query}'`)
 		distube
 			.play(member.voice.channel, query, { metadata: { interaction }, textChannel: interaction.channel as TextChannel, member })
-			.then((data) => console.log(data))
-            .catch(error => interaction.editReply('Something went wrong!'))
+			.then((data) => logger.info(data))
+            .catch(error => {
+                interaction.editReply('Something went wrong!')
+                logger.error(error)
+            })
 
 	}
 }
