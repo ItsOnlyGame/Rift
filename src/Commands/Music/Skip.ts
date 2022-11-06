@@ -45,7 +45,13 @@ export default class Skip extends Command {
 
 		var skipAmount = interaction.options.get('skip-amount')?.value ?? 1
 		for (var i = 0; i < skipAmount; i++) {
-			queue.skip()
+            if (queue.songs.length == 1) {
+                queue.stop()
+            } else {
+                queue.skip()
+            }
 		}
+
+        interaction.deleteReply()
 	}
 }

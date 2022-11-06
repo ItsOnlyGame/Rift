@@ -43,17 +43,13 @@ initDisTube(client)
 async function loadCommandsFromDir(path: string) {
 	const content = fs.readdirSync(path)
 
-	var ext = process.env.NODE_ENV == 'development' ? '.ts' : '.js'
-
 	
     for (var file of content) {
-        if (file.endsWith(ext)) {
-            const ICommand = await import(`${path.replace("./src", ".").replace("./dist", ".")}/${file}`);
+        if (file.endsWith('.ts')) {
+            const ICommand = await import(`${path.replace("./src", ".")}/${file}`);
             const command: Command = new ICommand.default
             commands.set(command.data.name, command);
 
-        } else if (file.endsWith('.js.map')) {
-            continue
         } else {
             await loadCommandsFromDir(`${path}/${file}`);
         }
@@ -126,8 +122,7 @@ async function loadSlashCommandsGuild(guildId: string) {
     }
 }
 client.once('ready', async () => {
-	var ext = process.env.NODE_ENV == 'development' ? 'src' : 'dist'
-	await loadCommandsFromDir('./' + ext + '/Commands')
+	await loadCommandsFromDir('./src/Commands')
 
     if (LOAD_SLASH_COMMANDS) {
         await loadSlashCommands()

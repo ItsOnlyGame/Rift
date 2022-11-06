@@ -1,5 +1,20 @@
 # Change Log
 
+## [4.2.0] | 6.11.2022
+### Added 
+- Ability to add multiple tracks to queue in one command
+
+### Removed
+- Removed the whole compiling into javascript thing
+
+### Changed
+- Updated dependencies
+
+### Fixed
+- Changed from yarn to npm, this for some reason fixed distube
+- Skipping while only one track was in queue resulted in a crash
+
+
 ## [4.1.0] | 14.09.2022
 ### Added
 - A presence was added. 

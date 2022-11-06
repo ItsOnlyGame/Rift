@@ -4,8 +4,8 @@ import DisTube from 'distube'
 import { logger } from '../index'
 import { getConfig } from '../Config'
 import GuildSettings from '../Guilds/GuildSettings'
-import { YtDlpPlugin } from '@distube/yt-dlp'
 import TrackMetadata from 'src/Models/TrackMetadata'
+import { YtDlpPlugin } from '@distube/yt-dlp'
 
 const spotify = getConfig().spotify
 
@@ -15,14 +15,14 @@ export function initDisTube(client: Client) {
 	distube = new DisTube(client, {
 		searchSongs: 1,
 		plugins: [
-            new YtDlpPlugin({ update: false }),
 			new SpotifyPlugin({
 				api: {
 					clientId: spotify.clientId,
 					clientSecret: spotify.clientSecret
 				},
 				emitEventsAfterFetching: true
-			})
+			}),
+            new YtDlpPlugin()
 		],
 		nsfw: true,
 	})
@@ -36,13 +36,11 @@ export function initDisTube(client: Client) {
 		queue.setVolume(GuildSettings.getGuildSettings(queue.voiceChannel.guildId, queue.client).volume)
 	})
 
-	distube.on('addList', (queue, playlist) => {
+	distube.on('addList', async (queue, playlist) => {
         const interaction = (playlist.metadata as TrackMetadata).interaction
 
 		const embed = new EmbedBuilder()
 		const song = playlist.songs[0]
-
-        playlist.metadata
 
 		embed.setAuthor({ name: queue.songs.length == 1 ? 'Playing' : 'Added to queue', iconURL: song.user.avatarURL(), url: song.playlist.url })
 
@@ -58,12 +56,14 @@ export function initDisTube(client: Client) {
 		embed.setColor(getConfig().defaultColors.success as HexColorString)
 		embed.setThumbnail(song.thumbnail)
 
-		interaction.editReply({ embeds: [embed], content: '' })
+        interaction.fetchReply().then(message => {
+            const oldEmbeds = message.embeds.filter(item => item.data.type == 'rich')
+            interaction.editReply({ embeds: [...oldEmbeds, embed], content: '' })    
+        })
 	})
 
-	distube.on('addSong', (queue, song) => {
+	distube.on('addSong', async (queue, song) => {
         const interaction = (song.metadata as TrackMetadata).interaction
-
 		const embed = new EmbedBuilder()
 
 		embed.setAuthor({ name: queue.songs.length == 1 ? 'Playing' : 'Added to queue', iconURL: song.user.avatarURL(), url: song.url })
@@ -73,7 +73,10 @@ export function initDisTube(client: Client) {
 		])
 		embed.setColor(getConfig().defaultColors.success as HexColorString)
 		embed.setThumbnail(song.thumbnail)
-
-		interaction.editReply({ embeds: [embed], content: '' })
-	})
+        
+        interaction.fetchReply().then(message => {
+            const oldEmbeds = message.embeds.filter(item => item.data.type == 'rich')
+            interaction.editReply({ embeds: [...oldEmbeds, embed], content: '' })    
+        })	
+    })
 }

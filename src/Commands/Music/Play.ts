@@ -33,23 +33,58 @@ export default class Play extends Command {
 			return
 		}
 
-		const query = interaction.options.get('link-or-query')?.value as string
+		let input = (interaction.options.get('link-or-query')?.value as string).split(' ')
+		let queries = []
+		if (input.length > 1) {
+			if (!this.validURL(input[0])) {
+				queries.push(input.join(' '))
+			} else {
+				input.forEach((value) => queries.push(value))
+			}
+		} else {
+            queries.push(input[0])
+        }
 
-		if (!query) {
-			interaction.editReply('you need to give me a URL or a search term.')
+		if (!queries) {
+			interaction.editReply('You need to give me a URL or a search term.')
 			return
 		}
 
-		logger.info(`Searching with query: ${query}`)
+		logger.info(`Searching with query: ${queries.join(', ')}`)
+		interaction.editReply(`Searching for '${queries.join(', ')}'`)
         
-        interaction.editReply(`Searching for '${query}'`)
-		distube
-			.play(member.voice.channel, query, { metadata: { interaction }, textChannel: interaction.channel as TextChannel, member })
-			.then((data) => logger.info(data))
-            .catch(error => {
+		// If there is only one query or url then add it to the queue
+		if (queries.length == 1) {
+			distube
+				.play(member.voice.channel, queries[0], { metadata: { interaction }, textChannel: interaction.channel as TextChannel, member })
+				.catch((error) => {
+					interaction.editReply('Something went wrong!')
+					logger.error(error)
+				})
+			return
+		}
+
+		for (let query of queries) {
+            try {
+                await distube.play(member.voice.channel, query, { metadata: { interaction }, textChannel: interaction.channel as TextChannel, member })
+            } catch (error) {
                 interaction.editReply('Something went wrong!')
                 logger.error(error)
-            })
+            }
+		}
+        
+	}
 
+	validURL(str: string) {
+		var pattern = new RegExp(
+			'^(https?:\\/\\/)?' + // protocol
+				'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+				'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+				'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+				'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+				'(\\#[-a-z\\d_]*)?$',
+			'i'
+		) // fragment locator
+		return !!pattern.test(str)
 	}
 }
