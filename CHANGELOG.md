@@ -1,5 +1,11 @@
 # Change Log
 
+## [5.0.0] | 17.11.2022
+#### Switched to Java from Typescript  
+- At this point I've switched between typescript and Java too many times. I'll just do in C next.
+- Support for old school chat commands and application commands. 
+- Better backend for music playback (Custom lavaplayer fork)
+
 ## [4.2.0] | 6.11.2022
 ### Added 
 - Ability to add multiple tracks to queue in one command
