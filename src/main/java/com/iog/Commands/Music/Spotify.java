@@ -6,8 +6,10 @@ import com.iog.MusicPlayer.PlayerManager;
 import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.ConnectionUtils;
 import discord4j.common.util.Snowflake;
+import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.VoiceState;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -21,6 +23,7 @@ public class Spotify extends BaseCommand {
 		super(
 			new String[]{"spotify", "sp"},
 			ApplicationCommandRequest.builder()
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
 				.name("play-spotify")
 				.description("Plays music from Spotify")
 				.addOption(ApplicationCommandOptionData.builder()

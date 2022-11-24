@@ -5,6 +5,7 @@ import com.iog.Handlers.GuildSettings;
 import com.iog.Utils.Format;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -21,16 +22,7 @@ public class Delete extends BaseCommand {
 	public Delete() {
 		super(
 			new String[]{"delete", "del"},
-			ApplicationCommandRequest.builder()
-				.name("delete")
-				.description("Deletes message(s)")
-				.addOption(ApplicationCommandOptionData.builder()
-					.name("amount")
-					.description("Amount of messages to delete")
-					.type(ApplicationCommandOption.Type.INTEGER.getValue())
-					.required(false)
-					.build())
-				.build()
+			null
 		);
 	}
 	
@@ -64,24 +56,6 @@ public class Delete extends BaseCommand {
 	
 	@Override
 	public void run(ChatInputInteractionEvent interaction) {
-		if (!hasPermission(interaction.getInteraction().getMember().orElseThrow())) {
-			interaction.editReply("You don't have permissions to use this command").subscribe();
-			return;
-		}
-		
-		long amount = 1;
-		boolean amountExists = interaction.getOption("amount").orElseThrow().getValue().isPresent();
-		if (amountExists) {
-			amount = interaction.getOption("amount").orElseThrow().getValue().get().asLong();
-		}
-		
-		long finalAmount = amount;
-		interaction.getInteraction().getChannel().cast(GuildMessageChannel.class).subscribe(messageChannel -> {
-			messageChannel.getMessagesBefore(Snowflake.of(Instant.now())).take(finalAmount).map(Message::getId).transform(messageChannel::bulkDelete).subscribe();
-		});
-		
-		interaction.deleteReply().subscribe();
-		
 	}
 	
 	private boolean hasPermission(Member member) {

@@ -4,6 +4,7 @@ import com.iog.Commands.BaseCommand;
 import com.iog.Utils.Format;
 import com.iog.Utils.Settings;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.entity.Message;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.discordjson.json.ApplicationCommandRequest;
@@ -16,6 +17,7 @@ public class Help extends BaseCommand {
 		super(
 			new String[]{"help"},
 			ApplicationCommandRequest.builder()
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
 				.name("help")
 				.description("Gives help about this bots functions")
 				.build()

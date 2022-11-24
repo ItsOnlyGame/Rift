@@ -7,6 +7,7 @@ import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.VoiceState;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -23,6 +24,7 @@ public class Join extends BaseCommand {
 		super(
 			new String[]{"join", "connect", "c", "j"},
 			ApplicationCommandRequest.builder()
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
 				.name("join")
 				.description("Join voice channel")
 				.build()

@@ -9,6 +9,7 @@ import com.iog.Utils.Format;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.VoiceState;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -23,6 +24,7 @@ public class Play extends BaseCommand {
 		super(
 			new String[]{"play", "p"},
 			ApplicationCommandRequest.builder()
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
 				.name("play")
 				.description("Plays music")
 				.addOption(ApplicationCommandOptionData.builder()
@@ -84,6 +86,7 @@ public class Play extends BaseCommand {
 			return;
 		}
 		assert voiceState != null;
+		
 		
 		boolean queryExists = interaction.getOption("link-or-query").orElseThrow().getValue().isPresent();
 		if (!queryExists) {

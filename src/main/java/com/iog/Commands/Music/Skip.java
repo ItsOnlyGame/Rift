@@ -9,6 +9,7 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.VoiceState;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
@@ -22,13 +23,14 @@ public class Skip extends BaseCommand {
 		super(
 			new String[]{"skip", "s"},
 			ApplicationCommandRequest.builder()
-				.name("remove")
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
+				.name("skip")
 				.description("Removes the track at that the given index")
 				.addOption(ApplicationCommandOptionData.builder()
 					.name("index")
 					.description("The index of a track in queue")
 					.type(ApplicationCommandOption.Type.INTEGER.getValue())
-					.required(true)
+					.required(false)
 					.build())
 				.build());
 	}
@@ -72,12 +74,14 @@ public class Skip extends BaseCommand {
 		boolean amountExists = interaction.getOption("amount").orElseThrow().getValue().isPresent();
 		if (!amountExists) {
 			manager.getScheduler().skip(0);
+			interaction.deleteReply().subscribe();
 			return;
 		}
 		
 		int amount = (int)interaction.getOption("amount").orElseThrow().getValue().get().asLong();
 		if (amount > 0) {
 			manager.getScheduler().skip(amount);
+			interaction.deleteReply().subscribe();
 			return;
 		}
 		

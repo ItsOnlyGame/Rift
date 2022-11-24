@@ -3,6 +3,7 @@ package com.iog.Commands.Other;
 import com.iog.Commands.BaseCommand;
 import com.iog.Main;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 
@@ -19,6 +20,7 @@ public class BotInfo extends BaseCommand {
 		super(
 			new String[]{"botinfo", "bot", "this"},
 			ApplicationCommandRequest.builder()
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
 				.name("bot-info")
 				.description("Tells information about the bot")
 				.build()

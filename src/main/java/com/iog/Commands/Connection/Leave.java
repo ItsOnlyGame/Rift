@@ -5,6 +5,7 @@ import discord4j.common.util.Snowflake;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.VoiceState;
+import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.VoiceChannel;
@@ -20,6 +21,7 @@ public class Leave extends BaseCommand {
 		super(
 			new String[]{"leave", "disconnect", "dc", "dis"},
 			ApplicationCommandRequest.builder()
+				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
 				.name("leave")
 				.description("Leave voice channel")
 				.build()

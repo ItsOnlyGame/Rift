@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.iog"
-version = "5.0.0"
+version = "5.0.1"
 
 application {
     mainClass.set("com.iog.Main")
@@ -30,7 +30,7 @@ dependencies {
 
     implementation("org.reflections:reflections:0.10.2")
 
-    implementation("org.slf4j:slf4j-simple:2.0.3")
+    implementation("org.slf4j:slf4j-simple:2.0.4")
     implementation("org.tinylog:tinylog-api:2.5.0")
     implementation("org.tinylog:tinylog-impl:2.5.0")
 }

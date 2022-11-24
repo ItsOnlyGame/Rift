@@ -1,14 +1,14 @@
 package com.iog.Commands;
 
 import com.iog.Handlers.GuildSettings;
-import com.iog.Main;
 import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.Settings;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
+import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
+import discord4j.core.event.domain.interaction.InteractionCreateEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
-import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import org.reflections.Reflections;
@@ -17,11 +17,9 @@ import org.tinylog.Logger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 public class CommandHandler {
     public List<BaseCommand> commands = new ArrayList<>();
@@ -42,12 +40,14 @@ public class CommandHandler {
         }
 
         Settings settings = Settings.getSettings();
+        List<ApplicationCommandRequest> commandRequestList = commands.stream().map(BaseCommand::getApplicationCommand).filter(Objects::nonNull).toList();
+        long applicationId = Long.parseLong(settings.botId);
         
         if (settings.refreshSlashCommands) {
-            List<ApplicationCommandRequest> commandRequestList = commands.stream().map(BaseCommand::getApplicationCommand).toList();
-
+            Logger.info("Bulk Overwrite of global application commands started");
+    
             client.getApplicationService()
-                .bulkOverwriteGlobalApplicationCommand(484004377841893396L, commandRequestList)
+                .bulkOverwriteGlobalApplicationCommand(applicationId, commandRequestList)
                 .subscribe();
             
             settings.refreshSlashCommands = false;
@@ -55,11 +55,11 @@ public class CommandHandler {
         }
     
         if (!settings.guildIdSlashCommandsRefresh.equals("")) {
-            List<ApplicationCommandRequest> commandRequestList = commands.stream().map(BaseCommand::getApplicationCommand).toList();
+            Logger.info("Bulk Overwrite of guild application commands started on " + settings.guildIdSlashCommandsRefresh);
             String guildId = settings.guildIdSlashCommandsRefresh;
             
             client.getApplicationService()
-                .bulkOverwriteGuildApplicationCommand(484004377841893396L, Snowflake.of(guildId).asLong(), commandRequestList)
+                .bulkOverwriteGuildApplicationCommand(applicationId, Snowflake.of(guildId).asLong(), commandRequestList)
                 .subscribe();
         }
 
@@ -76,6 +76,7 @@ public class CommandHandler {
 
     public BaseCommand getApplicationCommand(String name) {
         for (BaseCommand command : commands) {
+            if (command.getApplicationCommand() == null) continue;
             if (command.getApplicationCommand().name().equals(name)) {
                 return command;
             }

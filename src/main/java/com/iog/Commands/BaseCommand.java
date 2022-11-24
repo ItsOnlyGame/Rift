@@ -1,6 +1,7 @@
 package com.iog.Commands;
 
 import com.iog.Utils.CommandExecutionException;
+import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandRequest;

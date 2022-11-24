@@ -1,5 +1,11 @@
 # Change Log
 
+## [5.0.1] | 24.11.2022
+### Fixed
+- Fixed an issue where application commands could not be registered
+### Removed
+- Delete command no longer has a slash command
+
 ## [5.0.0] | 17.11.2022
 #### Switched to Java from Typescript  
 - At this point I've switched between typescript and Java too many times. I'll just do in C next.
