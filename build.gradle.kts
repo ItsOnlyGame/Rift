@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.iog"
-version = "5.0.1"
+version = "5.0.2"
 
 application {
     mainClass.set("com.iog.Main")

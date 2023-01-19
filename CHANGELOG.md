@@ -1,5 +1,10 @@
 # Change Log
 
+## [5.0.2] | 19.01.2023
+### Fixed
+- Playing embeds didn't contain the track or playlist url in the title
+- Only typing the prefix would be considered an attempt to execute a command
+
 ## [5.0.1] | 24.11.2022
 ### Fixed
 - Fixed an issue where application commands could not be registered

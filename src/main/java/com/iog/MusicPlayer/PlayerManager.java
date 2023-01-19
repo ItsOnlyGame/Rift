@@ -1,6 +1,5 @@
 package com.iog.MusicPlayer;
 
-import com.iog.Main;
 import com.iog.Utils.Format;
 import com.iog.Utils.Settings;
 import com.neovisionaries.i18n.CountryCode;
@@ -24,8 +23,6 @@ import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.core.spec.EmbedCreateSpec;
 import org.tinylog.Logger;
-
-import javax.annotation.Nullable;
 
 public class PlayerManager {
 	public final AudioPlayerManager playerManager;
@@ -88,7 +85,7 @@ public class PlayerManager {
 				
 				Member member = getMember(message, interaction);
 				EmbedCreateSpec.Builder specBuilder = EmbedCreateSpec.builder()
-					.author("Playing", null, member.getAvatarUrl())
+					.author("Playing", audioTrack.getInfo().uri, member.getAvatarUrl())
 					.color(Format.hexToColor(Settings.getSettings().defaultColors.get("success")))
 					.thumbnail(audioTrack.getInfo().artworkUrl)
 					.addField("Title", audioTrack.getInfo().title, true)
@@ -112,7 +109,7 @@ public class PlayerManager {
 				
 				Member member = getMember(message, interaction);
 				EmbedCreateSpec.Builder specBuilder = EmbedCreateSpec.builder()
-					.author("Playing", null, member.getAvatarUrl())
+					.author("Playing", audioPlaylist.getPlaylistUrl(), member.getAvatarUrl())
 					.color(Format.hexToColor(Settings.getSettings().defaultColors.get("success")))
 					.thumbnail(audioPlaylist.getTracks().get(0).getInfo().artworkUrl)
 					.addField("Playlist name", audioPlaylist.getName(), false)

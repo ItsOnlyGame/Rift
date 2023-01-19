@@ -95,6 +95,7 @@ public class CommandHandler {
         }
 
         String alias = content.substring(settings.getPrefix().length()).split(" ")[0];
+        if (alias.contentEquals("")) return;
         String[] arguments = content.substring(settings.getPrefix().length() + alias.length()).trim().split(" ");
 
         if (arguments.length == 1) {
