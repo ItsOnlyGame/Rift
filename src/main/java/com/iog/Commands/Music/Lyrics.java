@@ -116,7 +116,7 @@ public class Lyrics extends BaseCommand {
 			interaction.editReply(part).block();
 		}
 	}
-
+	
 	private List<String> getParts(String lyricsString, String searchQuery, String lyricsUrl) {
 		int partitionSize = 2000;
 		

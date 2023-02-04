@@ -16,7 +16,7 @@ public class Prefix extends BaseCommand {
 	
 	@Override
 	public void run(Message message, String[] args) {
-
+		
 		
 		GuildSettings settings = GuildSettings.of(message.getGuildId().orElseThrow().asLong());
 		if (args.length == 0) {

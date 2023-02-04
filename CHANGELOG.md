@@ -1,5 +1,11 @@
 # Change Log
 
+## [5.0.3] | 04.02.2023
+### Changed
+- Project reformatting
+- Dependency changes
+
+
 ## [5.0.2] | 19.01.2023
 ### Fixed
 - Playing embeds didn't contain the track or playlist url in the title

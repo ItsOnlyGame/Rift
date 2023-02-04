@@ -5,14 +5,11 @@ import com.iog.MusicPlayer.GuildAudioManager;
 import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.ConnectionUtils;
 import discord4j.common.util.Snowflake;
-import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.VoiceState;
 import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandRequest;
-import discord4j.voice.VoiceConnection;
 
 public class Resume extends BaseCommand {
 	

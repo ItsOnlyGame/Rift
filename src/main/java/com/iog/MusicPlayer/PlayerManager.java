@@ -25,16 +25,8 @@ import discord4j.core.spec.EmbedCreateSpec;
 import org.tinylog.Logger;
 
 public class PlayerManager {
-	public final AudioPlayerManager playerManager;
-	
 	private static PlayerManager INSTANCE;
-	
-	public static synchronized PlayerManager getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new PlayerManager();
-		}
-		return INSTANCE;
-	}
+	public final AudioPlayerManager playerManager;
 	
 	public PlayerManager() {
 		this.playerManager = new DefaultAudioPlayerManager();
@@ -68,11 +60,19 @@ public class PlayerManager {
 		AudioSourceManagers.registerLocalSource(this.playerManager);
 	}
 	
+	public static synchronized PlayerManager getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new PlayerManager();
+		}
+		return INSTANCE;
+	}
+	
 	/**
 	 * Loads and plays the track found with variable query
-	 * @param message Message object
+	 *
+	 * @param message     Message object
 	 * @param interaction Interaction object
-	 * @param query Link or a search query
+	 * @param query       Link or a search query
 	 */
 	public void loadAndPlay(Message message, ChatInputInteractionEvent interaction, String query) {
 		GuildAudioManager musicManager = GuildAudioManager.of(getGuildId(message, interaction));

@@ -38,7 +38,7 @@ public class Queue extends BaseCommand {
 			return;
 		}
 		
-		for (String part: parts) {
+		for (String part : parts) {
 			message.getChannel().subscribe(channel -> channel.createMessage(part).subscribe());
 		}
 	}
@@ -54,7 +54,7 @@ public class Queue extends BaseCommand {
 			return;
 		}
 		
-		for (String part: parts) {
+		for (String part : parts) {
 			interaction.createFollowup(part).subscribe();
 		}
 	}

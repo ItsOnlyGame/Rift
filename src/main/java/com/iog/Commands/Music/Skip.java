@@ -6,16 +6,13 @@ import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.ConnectionUtils;
 import com.iog.Utils.Format;
 import discord4j.common.util.Snowflake;
-import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.VoiceState;
 import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandOptionData;
 import discord4j.discordjson.json.ApplicationCommandRequest;
-import discord4j.voice.VoiceConnection;
 
 public class Skip extends BaseCommand {
 	
@@ -70,7 +67,7 @@ public class Skip extends BaseCommand {
 			interaction.editReply("You have to be in the same voice channel as I").subscribe();
 			return;
 		}
-
+		
 		boolean amountExists = interaction.getOption("amount").orElseThrow().getValue().isPresent();
 		if (!amountExists) {
 			manager.getScheduler().skip(0);
@@ -78,7 +75,7 @@ public class Skip extends BaseCommand {
 			return;
 		}
 		
-		int amount = (int)interaction.getOption("amount").orElseThrow().getValue().get().asLong();
+		int amount = (int) interaction.getOption("amount").orElseThrow().getValue().get().asLong();
 		if (amount > 0) {
 			manager.getScheduler().skip(amount);
 			interaction.deleteReply().subscribe();

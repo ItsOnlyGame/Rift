@@ -6,7 +6,6 @@ import com.iog.MusicPlayer.PlayerManager;
 import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.ConnectionUtils;
 import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.object.VoiceState;
 import discord4j.core.object.command.ApplicationCommand;

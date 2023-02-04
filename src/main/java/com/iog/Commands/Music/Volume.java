@@ -8,14 +8,12 @@ import com.iog.Utils.ConnectionUtils;
 import com.iog.Utils.Format;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.VoiceState;
 import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandOptionData;
 import discord4j.discordjson.json.ApplicationCommandRequest;
-import discord4j.voice.VoiceConnection;
 
 public class Volume extends BaseCommand {
 	
@@ -33,7 +31,7 @@ public class Volume extends BaseCommand {
 					.required(false)
 					.build())
 				.build()
-        );
+		);
 	}
 	
 	@Override
@@ -84,7 +82,7 @@ public class Volume extends BaseCommand {
 			return;
 		}
 		
-		int newVolume = (int)interaction.getOption("new-volume").orElseThrow().getValue().get().asLong();
+		int newVolume = (int) interaction.getOption("new-volume").orElseThrow().getValue().get().asLong();
 		manager.getPlayer().setVolume(newVolume);
 		interaction.editReply("Volume set to " + newVolume + "%").subscribe();
 		

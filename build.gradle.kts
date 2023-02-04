@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.iog"
-version = "5.0.2"
+version = "5.0.3"
 
 application {
     mainClass.set("com.iog.Main")
@@ -25,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.iog:lavaplayer-unofficial:1.3.83")
+    implementation("com.iog:lavaplayer:1.4.0")
     implementation("com.discord4j:discord4j-core:3.2.3")
 
     implementation("org.reflections:reflections:0.10.2")

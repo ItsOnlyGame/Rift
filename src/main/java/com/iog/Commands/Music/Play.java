@@ -16,7 +16,6 @@ import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandOptionData;
 import discord4j.discordjson.json.ApplicationCommandRequest;
 import discord4j.voice.AudioProvider;
-import discord4j.voice.VoiceConnection;
 
 public class Play extends BaseCommand {
 	

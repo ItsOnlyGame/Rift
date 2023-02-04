@@ -8,16 +8,13 @@ import com.iog.Utils.ConnectionUtils;
 import com.iog.Utils.Format;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 import discord4j.common.util.Snowflake;
-import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.VoiceState;
 import discord4j.core.object.command.ApplicationCommand;
 import discord4j.core.object.command.ApplicationCommandOption;
 import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import discord4j.discordjson.json.ApplicationCommandOptionData;
 import discord4j.discordjson.json.ApplicationCommandRequest;
-import discord4j.voice.VoiceConnection;
 
 public class Remove extends BaseCommand {
 	
@@ -101,7 +98,7 @@ public class Remove extends BaseCommand {
 			interaction.editReply("Give a valid position in the queue to remove it").subscribe();
 			return;
 		}
-		int index = (int)interaction.getOption("index").orElseThrow().getValue().get().asLong();
+		int index = (int) interaction.getOption("index").orElseThrow().getValue().get().asLong();
 		
 		
 		if (index > queue.size() || index <= 0) {
