@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.iog"
-version = "5.0.3"
+version = "5.1.0"
 
 application {
     mainClass.set("com.iog.Main")
@@ -25,14 +25,14 @@ repositories {
 }
 
 dependencies {
-    implementation("com.iog:lavaplayer:1.4.0")
-    implementation("com.discord4j:discord4j-core:3.2.3")
+    implementation("com.iog:lavaplayer:1.4.1")
+    implementation("com.discord4j:discord4j-core:3.2.4")
 
     implementation("org.reflections:reflections:0.10.2")
 
-    implementation("org.slf4j:slf4j-simple:2.0.4")
-    implementation("org.tinylog:tinylog-api:2.5.0")
-    implementation("org.tinylog:tinylog-impl:2.5.0")
+    implementation("org.slf4j:slf4j-simple:2.0.5")
+    implementation("org.tinylog:tinylog-api:2.6.1")
+    implementation("org.tinylog:tinylog-impl:2.6.1")
 }
 
 tasks.withType<ShadowJar> {

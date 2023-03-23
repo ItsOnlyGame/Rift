@@ -2,6 +2,7 @@ package com.iog;
 
 import com.iog.Commands.CommandHandler;
 import com.iog.Handlers.EventHandler;
+import com.iog.Utils.DirectoryManager;
 import com.iog.Utils.Settings;
 import discord4j.core.DiscordClient;
 import discord4j.core.GatewayDiscordClient;
@@ -20,6 +21,7 @@ public class Main {
 	public static GatewayDiscordClient gateway;
 	
 	public static void main(String[] args) {
+		DirectoryManager.generateFolders();
 		Settings settings = Settings.getSettings();
 		
 		// Login to Discord API

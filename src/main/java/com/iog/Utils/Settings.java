@@ -35,7 +35,7 @@ public class Settings {
 		
 		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 		
-		String file_GlobalSettings = "./GlobalSettings.json";
+		String file_GlobalSettings = "./config/settings.json";
 		File file = new File(file_GlobalSettings);
 		
 		if (!file.exists()) {

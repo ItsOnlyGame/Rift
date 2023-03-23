@@ -24,31 +24,8 @@ public class GuildSettings {
 		this.id = id;
 	}
 	
-	public static void init() {
-		if (initialized) return;
-		initialized = true;
-		
-		File folder = new File("./guilds");
-		if (folder.exists()) {
-			if (folder.isDirectory()) {
-				return;
-			}
-		}
-		
-		try {
-			if (!folder.mkdir()) {
-				Logger.error("Couldn't create a folder for the guild settings. Check file write permissions!");
-				System.exit(12);
-			}
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public static GuildSettings of(long id) {
-		init();
-		
-		try (FileReader reader = new FileReader("./guilds/" + id + ".json")) {
+		try (FileReader reader = new FileReader("./config/guilds/" + id + ".json")) {
 			return gson.fromJson(reader, GuildSettings.class);
 		} catch (IOException ignored) {
 		}
@@ -58,9 +35,7 @@ public class GuildSettings {
 	}
 	
 	public static void save(GuildSettings settings) {
-		init();
-		
-		try (FileWriter writer = new FileWriter("./guilds/" + settings.getId() + ".json")) {
+		try (FileWriter writer = new FileWriter("./config/guilds/" + settings.getId() + ".json")) {
 			gson.toJson(settings, writer);
 		} catch (IOException e) {
 			Logger.error(e, e.getMessage());

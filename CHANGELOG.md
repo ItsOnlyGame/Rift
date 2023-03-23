@@ -1,5 +1,13 @@
 # Change Log
 
+## [5.1.0] | 23.03.2023
+### Changed
+- Changed directory structure. Now settings and guild settings are under config folder
+- Updated dependencies
+### Fixed
+- Fixed an issue where music playback was not working
+
+
 ## [5.0.3] | 04.02.2023
 ### Changed
 - Project reformatting

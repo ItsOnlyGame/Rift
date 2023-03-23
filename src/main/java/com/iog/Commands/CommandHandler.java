@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class CommandHandler {
 	public List<BaseCommand> commands = new ArrayList<>();
@@ -39,7 +40,7 @@ public class CommandHandler {
 		}
 		
 		Settings settings = Settings.getSettings();
-		List<ApplicationCommandRequest> commandRequestList = commands.stream().map(BaseCommand::getApplicationCommand).filter(Objects::nonNull).toList();
+		List<ApplicationCommandRequest> commandRequestList = commands.stream().map(BaseCommand::getApplicationCommand).filter(Objects::nonNull).collect(Collectors.toList());
 		long applicationId = Long.parseLong(settings.botId);
 		
 		if (settings.refreshSlashCommands) {

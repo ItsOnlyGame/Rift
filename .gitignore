@@ -1,7 +1,6 @@
 # Folders
 node_modules/
 config/
-guilds/
 logs/
 dist/
 .gradle/
@@ -11,5 +10,4 @@ build/
 # Files
 *.log
 .nvmrc
-GlobalSettings.json
 gradle.properties
