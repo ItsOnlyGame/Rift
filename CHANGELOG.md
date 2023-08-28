@@ -1,5 +1,10 @@
 # Change Log
 
+## [5.1.1] | 29.08.2023
+### Updated
+- Updated lavaplayer dependency to fix issues with music playback
+
+
 ## [5.1.0] | 23.03.2023
 ### Changed
 - Changed directory structure. Now settings and guild settings are under config folder

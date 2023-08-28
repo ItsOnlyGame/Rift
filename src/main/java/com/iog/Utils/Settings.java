@@ -65,7 +65,7 @@ public class Settings {
 	public static void saveSettings(Settings settings) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 		
-		String file_GlobalSettings = "./GlobalSettings.json";
+		String file_GlobalSettings = "./config/settings.json";
 		
 		try (FileWriter writer = new FileWriter(file_GlobalSettings)) {
 			gson.toJson(settings, writer);
