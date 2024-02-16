@@ -142,7 +142,7 @@ I'm just assuming the prefix is default: `r!`
 ## Notice
 
 Application commands and old school commands might not be the same.  
-So don't except to every command have a variation of the other.
+So don't expect every command have a variation of each other.
 
 ## License
 
