@@ -1,6 +1,4 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import java.io.FileOutputStream
-import java.util.Properties
 
 val generatedVersionDir = "$buildDir/generated-version"
 
@@ -11,28 +9,28 @@ plugins {
 }
 
 group = "com.iog"
-version = "5.1.1"
+version = "6.0.0"
 
 application {
-    mainClass.set("com.iog.Main")
+    mainClass = "com.iog.Main"
 }
 
 repositories {
-    maven(url = "https://jitpack.io")
-    maven(url = "https://m2.dv8tion.net/releases")
     mavenCentral()
-    mavenLocal()
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    implementation("com.iog:lavaplayer:1.4.2")
-    implementation("com.discord4j:discord4j-core:3.2.4")
+    implementation("dev.arbjerg:lavaplayer:2.1.1")
+    implementation("net.dv8tion:JDA:5.0.0-beta.21")
+    implementation("com.google.code.gson:gson:2.10.1")
 
-    implementation("org.reflections:reflections:0.10.2")
+    implementation("se.michaelthelin.spotify:spotify-web-api-java:6.5.2")
 
     implementation("org.slf4j:slf4j-simple:2.0.5")
     implementation("org.tinylog:tinylog-api:2.6.1")
     implementation("org.tinylog:tinylog-impl:2.6.1")
+    implementation("org.reflections:reflections:0.10.2")
 }
 
 tasks.withType<ShadowJar> {
