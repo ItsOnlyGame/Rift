@@ -1,19 +1,15 @@
 package com.iog.Commands.Music;
 
-import com.iog.Utils.ConnectionUtils;
-import net.dv8tion.jda.api.entities.Guild;
-import org.jetbrains.annotations.NotNull;
-
 import com.iog.Commands.BaseCommand;
 import com.iog.MusicPlayer.GuildAudioManager;
-import com.iog.Utils.CommandExecutionException;
-import com.iog.Utils.Format;
-
+import com.iog.Utils.ConnectionUtils;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class Skip extends BaseCommand {

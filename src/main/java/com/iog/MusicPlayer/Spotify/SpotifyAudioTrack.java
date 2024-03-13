@@ -148,9 +148,8 @@ public class SpotifyAudioTrack extends DelegatedAudioTrack {
 		} else if (audioItem instanceof YoutubeAudioTrack) {
 			return (YoutubeAudioTrack) audioItem;
 
-		} else if (audioItem instanceof AudioPlaylist) {
-			AudioPlaylist audioPlaylist = (AudioPlaylist) audioItem;
-			return (YoutubeAudioTrack) audioPlaylist.getTracks().get(searchIndex);
+		} else if (audioItem instanceof AudioPlaylist audioPlaylist) {
+            return (YoutubeAudioTrack) audioPlaylist.getTracks().get(searchIndex);
 
 		} else {
 			log.warn("Unknown AudioItem '{}' returned by YoutubeSearchProvider.", audioItem);

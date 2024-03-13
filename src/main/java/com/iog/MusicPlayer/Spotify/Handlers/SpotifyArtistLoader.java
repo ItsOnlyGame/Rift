@@ -36,7 +36,7 @@ public class SpotifyArtistLoader extends GetAudioTrackInfo {
 		List<AudioTrackInfo> songMetadata = getAudioTrack(Arrays.asList(artistTopTracks));
 		List<AudioTrack> audioTracks = audioTrackFactory.getAudioTracks(songMetadata, sourceManager);
 
-		return new BasicAudioPlaylist(artist.getName(), audioTracks, audioTracks.get(0), false);
+		return new BasicAudioPlaylist(artist.getName(), audioTracks, audioTracks.getFirst(), false);
 	}
 
 }

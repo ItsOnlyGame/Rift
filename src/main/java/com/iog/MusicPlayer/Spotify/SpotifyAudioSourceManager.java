@@ -14,7 +14,6 @@ import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.hc.core5.http.ParseException;
-import org.slf4j.LoggerFactory;
 import org.tinylog.Logger;
 
 import java.io.DataInput;

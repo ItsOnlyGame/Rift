@@ -43,6 +43,6 @@ public class SpotifySearchLoader extends GetAudioTrackInfo {
 			e.printStackTrace();
 		}
 
-		return new BasicAudioPlaylist("Search", audioTracks, audioTracks.get(0), true);
+		return new BasicAudioPlaylist("Search", audioTracks, audioTracks.getFirst(), true);
 	}
 }

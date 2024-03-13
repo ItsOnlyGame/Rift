@@ -24,6 +24,8 @@ public class ClearQueue extends BaseCommand {
 		Guild guild = event.getGuild();
 		Member member = event.getMember();
 
+		if (guild == null || member == null) return;
+
 		if (!ConnectionUtils.botIsInSameVoiceChannel(member, guild)) {
 			event.reply("You have to be in the same voice channel as I").queue();
 			return;

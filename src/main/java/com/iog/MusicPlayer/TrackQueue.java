@@ -27,7 +27,7 @@ public class TrackQueue {
 		for (int i = list.size() - 1; i > 1; i--) {
 			list.set(i + 1, list.get(i));
 		}
-		list.add(0, item);
+		list.addFirst(item);
 	}
 	
 	public int size() {
@@ -40,9 +40,9 @@ public class TrackQueue {
 		if (looping) {
 			
 			
-			return list.get(0).makeClone();
+			return list.getFirst().makeClone();
 		} else {
-			return list.remove(0);
+			return list.removeFirst();
 		}
 	}
 	

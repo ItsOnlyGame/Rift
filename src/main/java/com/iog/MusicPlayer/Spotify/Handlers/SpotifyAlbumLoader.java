@@ -35,7 +35,7 @@ public class SpotifyAlbumLoader extends GetAudioTrackInfo {
 		List<AudioTrackInfo> songMetadata = getAudioTrackAlbum(albumTracks, album);
 		List<AudioTrack> audioTracks = audioTrackFactory.getAudioTracks(songMetadata, sourceManager);
 
-		return new BasicAudioPlaylist(album.getName(), audioTracks, audioTracks.get(0), false);
+		return new BasicAudioPlaylist(album.getName(), audioTracks, audioTracks.getFirst(), false);
 	}
 
 	private List<TrackSimplified> getAllAlbumTracks(Album album, SpotifyApi api) {

@@ -89,19 +89,21 @@ public class PlayerManager {
 			@Override
 			public void playlistLoaded(AudioPlaylist audioPlaylist) {
 				if (audioPlaylist.isSearchResult()) {
-					this.trackLoaded(audioPlaylist.getTracks().get(0));
+					this.trackLoaded(audioPlaylist.getTracks().getFirst());
 					return;
 				}
 				
 				Member member = event.getMember();
-                Settings settings = Settings.getSettings();
+				assert member != null;
 
-                EmbedBuilder embedBuilder = new EmbedBuilder();
+				Settings settings = Settings.getSettings();
+
+				EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setAuthor("Playing", null, member.getAvatarUrl());
                 embedBuilder.setColor(Color.decode(settings.defaultColors.get("success")));
-                embedBuilder.setThumbnail(audioPlaylist.getTracks().get(0).getInfo().artworkUrl);
+                embedBuilder.setThumbnail(audioPlaylist.getTracks().getFirst().getInfo().artworkUrl);
                 embedBuilder.addField("Playlist name", audioPlaylist.getName(), false);
-                embedBuilder.addField("First track", audioPlaylist.getTracks().get(0).getInfo().title, false);
+                embedBuilder.addField("First track", audioPlaylist.getTracks().getFirst().getInfo().title, false);
                 embedBuilder.addField("Playlist size", String.valueOf(audioPlaylist.getTracks().size()), false);
                 if (musicManager.getPlayer().getPlayingTrack() != null) {
                     embedBuilder.setAuthor("Added to queue", null, member.getAvatarUrl());
