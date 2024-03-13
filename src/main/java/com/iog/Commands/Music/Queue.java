@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class Queue extends BaseCommand {
 	
 	public Queue() {

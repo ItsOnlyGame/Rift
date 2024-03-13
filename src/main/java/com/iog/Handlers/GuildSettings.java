@@ -4,15 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.tinylog.Logger;
 
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class GuildSettings {
-	/**
-	 * GuildHandler
-	 */
 	private static final Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 	private final long id;
 	private int volume = 50;

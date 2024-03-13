@@ -7,8 +7,8 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.managers.DirectAudioController;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class Leave extends BaseCommand {
-	
 	
 	public Leave() {
 		super(

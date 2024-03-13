@@ -1,8 +1,6 @@
 package com.iog.Handlers;
 
 import com.iog.MusicPlayer.GuildAudioManager;
-import com.iog.MusicPlayer.PlayerManager;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;

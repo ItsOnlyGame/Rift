@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public class BotInfo extends BaseCommand {
 
 	public BotInfo() {
