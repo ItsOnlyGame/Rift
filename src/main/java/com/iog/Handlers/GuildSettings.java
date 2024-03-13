@@ -14,12 +14,9 @@ public class GuildSettings {
 	 * GuildHandler
 	 */
 	private static final Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-	private static boolean initialized = false;
 	private final long id;
-	private String prefix = "r!";
 	private int volume = 50;
-	private boolean autoClean = true;
-	
+
 	public GuildSettings(long id) {
 		this.id = id;
 	}
@@ -46,30 +43,12 @@ public class GuildSettings {
 		return id;
 	}
 	
-	public String getPrefix() {
-		return prefix;
-	}
-	
-	public GuildSettings setPrefix(String prefix) {
-		this.prefix = prefix;
-		return this;
-	}
-	
 	public int getVolume() {
 		return volume;
 	}
 	
 	public GuildSettings setVolume(int volume) {
 		this.volume = volume;
-		return this;
-	}
-	
-	public boolean isAutoClean() {
-		return autoClean;
-	}
-	
-	public GuildSettings setAutoClean(boolean autoClean) {
-		this.autoClean = autoClean;
 		return this;
 	}
 	

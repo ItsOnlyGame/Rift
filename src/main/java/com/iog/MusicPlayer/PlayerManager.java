@@ -1,5 +1,8 @@
 package com.iog.MusicPlayer;
 
+import java.awt.Color;
+
+import com.iog.MusicPlayer.Spotify.SpotifyAudioSourceManager;
 import com.iog.Utils.Format;
 import com.iog.Utils.Settings;
 import com.neovisionaries.i18n.CountryCode;
@@ -8,20 +11,18 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.source.http.HttpAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.soundcloud.SoundCloudAudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.spotify.SpotifyAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.twitch.TwitchStreamAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import com.sedmelluq.discord.lavaplayer.track.playback.NonAllocatingAudioFrameBuffer;
-import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.core.spec.EmbedCreateSpec;
+
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+
+import org.jetbrains.annotations.NotNull;
 import org.tinylog.Logger;
 
 public class PlayerManager {
@@ -30,16 +31,12 @@ public class PlayerManager {
 	
 	public PlayerManager() {
 		this.playerManager = new DefaultAudioPlayerManager();
-		this.playerManager.getConfiguration().setFrameBufferFactory(NonAllocatingAudioFrameBuffer::new);
-		this.playerManager.setUseSeekGhosting(true);
-		this.playerManager.setFrameBufferDuration(1000);
 		
 		// Setup YouTube, SoundCloud and Twitch audio source, needs a token
 		playerManager.registerSourceManager(new YoutubeAudioSourceManager());
 		playerManager.registerSourceManager(SoundCloudAudioSourceManager.createDefault());
 		playerManager.registerSourceManager(new TwitchStreamAudioSourceManager());
-		
-		
+
 		// Setup Spotify audio source, needs a token
 		if (Settings.getSettings().spotifyClientId != null && Settings.getSettings().spotifyClientSecret != null) {
 			String clientSecret = Settings.getSettings().spotifyClientSecret;
@@ -50,14 +47,10 @@ public class PlayerManager {
 			SpotifyAudioSourceManager spotifyAudioSourceManager = new SpotifyAudioSourceManager(clientId, clientSecret, countryCode);
 			playerManager.registerSourceManager(spotifyAudioSourceManager);
 		}
-		
-		
-		// Setup local and http audio sources
-		playerManager.registerSourceManager(new LocalAudioSourceManager());
+
 		playerManager.registerSourceManager(new HttpAudioSourceManager());
-		
+
 		AudioSourceManagers.registerRemoteSources(this.playerManager);
-		AudioSourceManagers.registerLocalSource(this.playerManager);
 	}
 	
 	public static synchronized PlayerManager getInstance() {
@@ -66,36 +59,30 @@ public class PlayerManager {
 		}
 		return INSTANCE;
 	}
-	
-	/**
-	 * Loads and plays the track found with variable query
-	 *
-	 * @param message     Message object
-	 * @param interaction Interaction object
-	 * @param query       Link or a search query
-	 */
-	public void loadAndPlay(Message message, ChatInputInteractionEvent interaction, String query) {
-		GuildAudioManager musicManager = GuildAudioManager.of(getGuildId(message, interaction));
+
+
+	public void loadAndPlay(@NotNull SlashCommandInteractionEvent event, String query) {
+		GuildAudioManager musicManager = GuildAudioManager.of(event.getGuild());
 		Logger.info("Used search term \"" + query + "\"");
 		
 		this.playerManager.loadItemOrdered(this, query.trim(), new AudioLoadResultHandler() {
 			@Override
 			public void trackLoaded(AudioTrack audioTrack) {
 				// audioTrack.setUserData(new TrackUserData(message));
-				
-				Member member = getMember(message, interaction);
-				EmbedCreateSpec.Builder specBuilder = EmbedCreateSpec.builder()
-					.author("Playing", audioTrack.getInfo().uri, member.getAvatarUrl())
-					.color(Format.hexToColor(Settings.getSettings().defaultColors.get("success")))
-					.thumbnail(audioTrack.getInfo().artworkUrl)
-					.addField("Title", audioTrack.getInfo().title, true)
-					.addField("Duration", Format.millisecondsToString(audioTrack.getDuration()), true);
-				
-				if (musicManager.getPlayer().getPlayingTrack() != null) {
-					specBuilder.author("Added to queue", null, message.getAuthor().orElseThrow().getAvatarUrl());
-				}
-				
-				sendMessage(message, interaction, specBuilder.build());
+				Member member = event.getMember();
+                Settings settings = Settings.getSettings();
+
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                embedBuilder.setAuthor("Playing", audioTrack.getInfo().uri, member.getAvatarUrl());
+                embedBuilder.setColor(Color.decode(settings.defaultColors.get("success")));
+                embedBuilder.setThumbnail(audioTrack.getInfo().artworkUrl);
+                embedBuilder.addField("Title", audioTrack.getInfo().title, true);
+                embedBuilder.addField("Duration", Format.millisecondsToString(audioTrack.getDuration()), true);
+                if (musicManager.getPlayer().getPlayingTrack() != null) {
+                    embedBuilder.setAuthor("Added to queue", null,  member.getAvatarUrl());
+                }
+
+				event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
 				musicManager.getScheduler().queue(audioTrack);
 			}
 			
@@ -106,21 +93,21 @@ public class PlayerManager {
 					return;
 				}
 				
-				
-				Member member = getMember(message, interaction);
-				EmbedCreateSpec.Builder specBuilder = EmbedCreateSpec.builder()
-					.author("Playing", audioPlaylist.getPlaylistUrl(), member.getAvatarUrl())
-					.color(Format.hexToColor(Settings.getSettings().defaultColors.get("success")))
-					.thumbnail(audioPlaylist.getTracks().get(0).getInfo().artworkUrl)
-					.addField("Playlist name", audioPlaylist.getName(), false)
-					.addField("First track", audioPlaylist.getTracks().get(0).getInfo().title, false)
-					.addField("Playlist size", String.valueOf(audioPlaylist.getTracks().size()), false);
-				
-				if (musicManager.getPlayer().getPlayingTrack() != null) {
-					specBuilder.author("Added to queue", null, member.getAvatarUrl());
-				}
-				
-				sendMessage(message, interaction, specBuilder.build());
+				Member member = event.getMember();
+                Settings settings = Settings.getSettings();
+
+                EmbedBuilder embedBuilder = new EmbedBuilder();
+                embedBuilder.setAuthor("Playing", null, member.getAvatarUrl());
+                embedBuilder.setColor(Color.decode(settings.defaultColors.get("success")));
+                embedBuilder.setThumbnail(audioPlaylist.getTracks().get(0).getInfo().artworkUrl);
+                embedBuilder.addField("Playlist name", audioPlaylist.getName(), false);
+                embedBuilder.addField("First track", audioPlaylist.getTracks().get(0).getInfo().title, false);
+                embedBuilder.addField("Playlist size", String.valueOf(audioPlaylist.getTracks().size()), false);
+                if (musicManager.getPlayer().getPlayingTrack() != null) {
+                    embedBuilder.setAuthor("Added to queue", null, member.getAvatarUrl());
+                }
+
+				event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
 				
 				for (AudioTrack track : audioPlaylist.getTracks()) {
 					musicManager.getScheduler().queue(track);
@@ -129,50 +116,14 @@ public class PlayerManager {
 			
 			@Override
 			public void noMatches() {
-				sendMessage(message, interaction, "No tracks found with that query: " + query);
+				event.getHook().editOriginal("No tracks found with that query: " + query).queue();
 			}
 			
 			@Override
 			public void loadFailed(FriendlyException exception) {
-				sendMessage(message, interaction, "No tracks found with that query: " + query);
+				event.getHook().editOriginal("Failed to load track...").queue();
 				exception.printStackTrace();
 			}
 		});
 	}
-	
-	public void sendMessage(Message message, ChatInputInteractionEvent interactionEvent, EmbedCreateSpec embed) {
-		if (interactionEvent != null) {
-			interactionEvent.editReply().withEmbeds(embed).subscribe();
-			return;
-		}
-		
-		message.getChannel().subscribe(channel -> channel.createMessage(embed).subscribe());
-	}
-	
-	public void sendMessage(Message message, ChatInputInteractionEvent interactionEvent, String content) {
-		if (interactionEvent != null) {
-			interactionEvent.editReply(content).subscribe();
-			return;
-		}
-		
-		message.getChannel().subscribe(channel -> channel.createMessage(content).subscribe());
-	}
-	
-	public Member getMember(Message message, ChatInputInteractionEvent interactionEvent) {
-		if (interactionEvent != null) {
-			return interactionEvent.getInteraction().getMember().orElseThrow();
-		}
-		
-		return message.getAuthorAsMember().blockOptional().orElseThrow();
-	}
-	
-	public Snowflake getGuildId(Message message, ChatInputInteractionEvent interactionEvent) {
-		if (interactionEvent != null) {
-			return interactionEvent.getInteraction().getGuildId().orElseThrow();
-		}
-		
-		return message.getGuildId().orElseThrow();
-	}
-	
-	
 }
