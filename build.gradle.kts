@@ -1,7 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
-val generatedVersionDir = "$buildDir/generated-version"
-
 plugins {
     id("java")
     id("application")
