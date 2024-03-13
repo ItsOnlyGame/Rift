@@ -22,9 +22,9 @@ public class BotInfo extends BaseCommand {
 		String text = "```" +
 				"Rift: " + "\n" +
 				"Version: " + Main.Version + "\n" +
-				"ID: " + selfId + "\n" +
-				"Github: " + "**https://github.com/ItsOnlyGame/Rift**" + "\n\n" +
-				"You can report you issues to github\n```";
+				"ID: " + selfId + "\n\n" +
+				"You can report you issues to github\n" +
+				"Github: " + "https://github.com/ItsOnlyGame/Rift" + "\n```";
 
 		event.reply(text).queue();
 	}
