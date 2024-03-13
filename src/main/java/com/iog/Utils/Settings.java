@@ -13,19 +13,17 @@ import java.util.Map;
 
 public class Settings {
 	private static Settings SETTINGS;
-	public String botId;
 	public String discordToken;
 	public String spotifyClientId;
 	public String spotifyClientSecret;
 	public String spotifyCountryCode;
 	public Map<String, String> defaultColors;
-	public boolean refreshSlashCommands;
-	public String guildIdSlashCommandsRefresh;
 	
 	public Settings() {
 		this.defaultColors = new LinkedHashMap<>();
 		this.defaultColors.put("success", String.format("#%02x%02x%02x", 77, 192, 58));
 		this.defaultColors.put("error", String.format("#%02x%02x%02x", 188, 39, 39));
+
 	}
 	
 	public static Settings getSettings() {
@@ -33,6 +31,7 @@ public class Settings {
 			return SETTINGS;
 		}
 		
+        Settings.generateFolders();
 		Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 		
 		String file_GlobalSettings = "./config/settings.json";
@@ -71,6 +70,24 @@ public class Settings {
 			gson.toJson(settings, writer);
 		} catch (IOException e) {
 			Logger.error(e, e.getMessage());
+		}
+	}
+
+	private static void generateFolders() {
+		File configFolder = new File("./config");
+		if (!configFolder.exists()) {
+			if (!configFolder.mkdir()) {
+				Logger.error("Couldn't create a folder for the guild settings. Check file write permissions!");
+				System.exit(12);
+			}
+		}
+
+		File guildsFolder = new File("./config/guilds");
+		if (!guildsFolder.exists()) {
+			if (!guildsFolder.mkdir()) {
+				Logger.error("Couldn't create a folder for the guild settings. Check file write permissions!");
+				System.exit(12);
+			}
 		}
 	}
 	

@@ -1,76 +1,60 @@
 package com.iog.Commands.Music;
 
+import java.awt.Color;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.iog.Commands.BaseCommand;
 import com.iog.MusicPlayer.GuildAudioManager;
-import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.Format;
 import com.iog.Utils.Settings;
-import com.sedmelluq.discord.lavaplayer.source.spotify.SpotifyAudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommand;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.core.spec.EmbedCreateSpec;
-import discord4j.discordjson.json.ApplicationCommandRequest;
+
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 public class Info extends BaseCommand {
 	
 	public Info() {
 		super(
-			new String[]{"info"},
-			ApplicationCommandRequest.builder()
-				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
-				.name("info")
-				.description("Gives information about the track playing")
-				.build()
+            Commands.slash("info", "Gives information about the track playing")
 		);
 	}
 	
 	@Override
-	public void run(Message message, String[] args) throws CommandExecutionException {
-		GuildAudioManager audioManager = GuildAudioManager.of(message.getGuildId().orElseThrow());
+	public void run(@NotNull SlashCommandInteractionEvent event) {
+		GuildAudioManager audioManager = GuildAudioManager.of(event.getGuild());
 		AudioTrack track = audioManager.getPlayer().getPlayingTrack();
-		Member member = message.getAuthorAsMember().blockOptional().orElseThrow();
+		Member member = event.getMember();
 		
 		if (track == null) {
-			message.getChannel().subscribe(channel -> channel.createMessage("No tracks playing").subscribe());
+			event.reply("No tracks playing").queue();
 			return;
 		}
 		
-		message.getChannel().subscribe(channel -> channel.createMessage(createResponseEmbed(track, member)).subscribe());
+		event.replyEmbeds(createResponseEmbed(track, member)).queue();
 	}
 	
-	@Override
-	public void run(ChatInputInteractionEvent interaction) {
-		Snowflake guildId = interaction.getInteraction().getGuildId().orElseThrow();
-		GuildAudioManager audioManager = GuildAudioManager.of(guildId);
-		AudioTrack track = audioManager.getPlayer().getPlayingTrack();
-		Member member = interaction.getInteraction().getMember().orElseThrow();
+	private MessageEmbed createResponseEmbed(AudioTrack track, Member member) {
+		EmbedBuilder embedBuilder = new EmbedBuilder();
+        embedBuilder.setAuthor(track.getInfo().title, null, member.getAvatarUrl());
+        embedBuilder.setColor(Color.decode(Settings.getSettings().defaultColors.get("success")));
+        embedBuilder.addField("Author", track.getInfo().author, true);
+        embedBuilder.addField("Duration", Format.millisecondsToString(track.getPosition()) + " - " + Format.millisecondsToString(track.getDuration()), true);
+        embedBuilder.addField("URL", track.getInfo().uri, false);
+        embedBuilder.addField("Author", track.getInfo().author, true);
 		
-		if (track == null) {
-			interaction.editReply("No tracks playing").subscribe();
-			return;
-		}
-		
-		interaction.editReply().withEmbeds(createResponseEmbed(track, member)).subscribe();
-	}
-	
-	private EmbedCreateSpec createResponseEmbed(AudioTrack track, Member member) {
-		EmbedCreateSpec.Builder spec = EmbedCreateSpec.builder()
-			.author(track.getInfo().title, null, member.getAvatarUrl())
-			.color(Format.hexToColor(Settings.getSettings().defaultColors.get("success")))
-			.addField("Author", track.getInfo().author, true)
-			.addField("Duration", Format.millisecondsToString(track.getPosition()) + " - " + Format.millisecondsToString(track.getDuration()), true)
-			.addField("URL", track.getInfo().uri, false)
-			.addField("Author", track.getInfo().author, true);
-		
+
+        /*
 		if (track instanceof SpotifyAudioTrack) {
 			spec.addField("Youtube Url", ((SpotifyAudioTrack) track).getYoutubeInfo().uri, false);
 			spec.addField("Youtube Author", ((SpotifyAudioTrack) track).getYoutubeInfo().author, false);
 		}
+        */
 		
-		return spec.build();
+		return embedBuilder.build();
 	}
 }

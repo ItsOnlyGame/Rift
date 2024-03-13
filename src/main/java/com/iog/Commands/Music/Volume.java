@@ -1,90 +1,51 @@
 package com.iog.Commands.Music;
 
+import com.iog.Utils.ConnectionUtils;
+import net.dv8tion.jda.api.entities.Guild;
+import org.jetbrains.annotations.NotNull;
+
 import com.iog.Commands.BaseCommand;
 import com.iog.Handlers.GuildSettings;
 import com.iog.MusicPlayer.GuildAudioManager;
 import com.iog.Utils.CommandExecutionException;
-import com.iog.Utils.ConnectionUtils;
 import com.iog.Utils.Format;
-import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommand;
-import discord4j.core.object.command.ApplicationCommandOption;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.discordjson.json.ApplicationCommandOptionData;
-import discord4j.discordjson.json.ApplicationCommandRequest;
+
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 public class Volume extends BaseCommand {
 	
 	public Volume() {
 		super(
-			new String[]{"volume", "vol", "v"},
-			ApplicationCommandRequest.builder()
-				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
-				.name("volume")
-				.description("Show the current volume")
-				.addOption(ApplicationCommandOptionData.builder()
-					.name("new-volume")
-					.description("Change volume")
-					.type(ApplicationCommandOption.Type.INTEGER.getValue())
-					.required(false)
-					.build())
-				.build()
+            Commands.slash("volume", "Show the current volume")
+					.addOption(OptionType.INTEGER, "new-volume", "Change volume")
 		);
 	}
 	
 	@Override
-	public void run(Message message, String[] args) throws CommandExecutionException {
-		final GuildAudioManager manager = GuildAudioManager.of(message.getGuildId().orElseThrow());
-		
-		message.getAuthorAsMember().subscribe(member -> {
-			
-			if (args.length == 0) {
-				message.getChannel().subscribe(channel -> channel.createMessage("Volume is " + manager.getPlayer().getVolume() + "%").subscribe());
-				return;
-			}
-			
-			if (!ConnectionUtils.botIsInSameVoiceChannel(member, message.getGuildId().orElseThrow())) {
-				message.getChannel().subscribe(channel -> channel.createMessage("You have to be in the same voice channel as I").subscribe());
-				return;
-			}
-			
-			
-			Integer vol = Format.toInteger(args[0]);
-			if (vol == null) {
-				message.getChannel().subscribe(channel -> channel.createMessage("Given argument wasn't a valid number").subscribe());
-				return;
-			}
-			
-			message.getChannel().subscribe(channel -> {
-				channel.createMessage("Volume set to " + vol + "%").subscribe();
-				manager.getPlayer().setVolume(vol);
-				GuildSettings.of(message.getGuildId().orElseThrow().asLong()).setVolume(vol).save();
-			});
-		});
-	}
-	
-	@Override
-	public void run(ChatInputInteractionEvent interaction) {
-		Member member = interaction.getInteraction().getMember().orElseThrow();
-		Snowflake guildId = interaction.getInteraction().getGuildId().orElseThrow();
-		final GuildAudioManager manager = GuildAudioManager.of(guildId);
-		
-		if (!ConnectionUtils.botIsInSameVoiceChannel(member, guildId)) {
-			interaction.editReply("You have to be in the same voice channel as I").subscribe();
+	public void run(@NotNull SlashCommandInteractionEvent event) {
+		final Member member = event.getMember();
+		final Guild guild = event.getGuild();
+
+		final GuildAudioManager manager = GuildAudioManager.of(guild);
+
+		if (!ConnectionUtils.botIsInSameVoiceChannel(member, guild)) {
+			event.reply("You have to be in the same voice channel as I").queue();
 			return;
 		}
 		
-		boolean newVolumeExists = interaction.getOption("new-volume").orElseThrow().getValue().isPresent();
-		if (!newVolumeExists) {
-			interaction.editReply("Volume is " + manager.getPlayer().getVolume() + "%").subscribe();
+		OptionMapping newVolumeExists = event.getOption("new-volume");
+		if (newVolumeExists == null) {
+			event.reply("Volume is " + manager.getPlayer().getVolume() + "%").queue();
 			return;
 		}
 		
-		int newVolume = (int) interaction.getOption("new-volume").orElseThrow().getValue().get().asLong();
+		int newVolume = event.getOption("new-volume").getAsInt();
 		manager.getPlayer().setVolume(newVolume);
-		interaction.editReply("Volume set to " + newVolume + "%").subscribe();
+		event.reply("Volume set to " + newVolume + "%").queue();
 		
 	}
 }

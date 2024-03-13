@@ -2,38 +2,29 @@ package com.iog.Commands.Other;
 
 import com.iog.Commands.BaseCommand;
 import com.iog.Main;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommand;
-import discord4j.core.object.entity.Message;
-import discord4j.discordjson.json.ApplicationCommandRequest;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.jetbrains.annotations.NotNull;
 
 public class BotInfo extends BaseCommand {
-	
-	private final String text = "```" +
-		"Rift: " + "\n" +
-		"Version: " + Main.Version + "\n" +
-		"ID: " + Main.gateway.getSelfId().asLong() + "\n" +
-		"Github: " + "**https://github.com/ItsOnlyGame/Rift**" + "\n\n" +
-		"You can report you issues to github\n```";
-	
+
 	public BotInfo() {
 		super(
-			new String[]{"botinfo", "bot", "this"},
-			ApplicationCommandRequest.builder()
-				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
-				.name("bot-info")
-				.description("Tells information about the bot")
-				.build()
+			Commands.slash("botinfo", "Tells information about the bot")
 		);
 	}
 	
 	@Override
-	public void run(Message message, String[] args) {
-		message.getChannel().subscribe(channel -> channel.createMessage(text).subscribe());
-	}
-	
-	@Override
-	public void run(ChatInputInteractionEvent interaction) {
-		interaction.editReply(text).subscribe();
+	public void run(@NotNull SlashCommandInteractionEvent event) {
+		String selfId = event.getJDA().getSelfUser().getId();
+
+		String text = "```" +
+				"Rift: " + "\n" +
+				"Version: " + Main.Version + "\n" +
+				"ID: " + selfId + "\n" +
+				"Github: " + "**https://github.com/ItsOnlyGame/Rift**" + "\n\n" +
+				"You can report you issues to github\n```";
+
+		event.reply(text).queue();
 	}
 }

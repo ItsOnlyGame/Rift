@@ -2,65 +2,40 @@ package com.iog.Commands.Music;
 
 import com.iog.Commands.BaseCommand;
 import com.iog.MusicPlayer.GuildAudioManager;
+
 import com.iog.Utils.ConnectionUtils;
-import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommand;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.discordjson.json.ApplicationCommandRequest;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import org.jetbrains.annotations.NotNull;
 
 public class ClearQueue extends BaseCommand {
 	
 	public ClearQueue() {
 		super(
-			new String[]{"clearqueue", "clear"},
-			ApplicationCommandRequest.builder()
-				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
-				.name("clear-queue")
-				.description("Clears the track queue")
-				.build()
+			Commands.slash("clearqueue", "Clear music queue")
 		);
 	}
 	
 	@Override
-	public void run(Message message, String[] args) {
-		message.getAuthorAsMember().subscribe(member -> {
-			if (!ConnectionUtils.botIsInSameVoiceChannel(member, message.getGuildId().orElseThrow())) {
-				message.getChannel().subscribe(channel -> channel.createMessage("You have to be in the same voice channel as I").subscribe());
-				return;
-			}
-			
-			GuildAudioManager musicManager = GuildAudioManager.of(message.getGuildId().orElseThrow());
-			if (musicManager.getPlayer().getPlayingTrack() == null) {
-				message.getChannel().subscribe(channel -> channel.createMessage("Queue is already empty").subscribe());
-				return;
-			}
-			
-			musicManager.getScheduler().getQueue().clear();
-			message.getChannel().subscribe(channel -> channel.createMessage("Queue cleared").subscribe());
-		});
-		
-	}
-	
-	@Override
-	public void run(ChatInputInteractionEvent interaction) {
-		Member member = interaction.getInteraction().getMember().orElseThrow();
-		Snowflake guildId = interaction.getInteraction().getGuildId().orElseThrow();
-		
-		if (!ConnectionUtils.botIsInSameVoiceChannel(member, guildId)) {
-			interaction.editReply("You have to be in the same voice channel as I").subscribe();
+	public void run(@NotNull SlashCommandInteractionEvent event) {
+		Guild guild = event.getGuild();
+		Member member = event.getMember();
+
+		if (!ConnectionUtils.botIsInSameVoiceChannel(member, guild)) {
+			event.reply("You have to be in the same voice channel as I").queue();
 			return;
 		}
 		
-		GuildAudioManager musicManager = GuildAudioManager.of(guildId);
+		GuildAudioManager musicManager = GuildAudioManager.of(guild);
 		
 		if (musicManager.getPlayer().getPlayingTrack() == null) {
-			interaction.editReply("Queue is already empty").subscribe();
+			event.reply("Queue is already empty").queue();
 			return;
 		}
 		
 		musicManager.getScheduler().getQueue().clear();
-		interaction.editReply("Queue cleared").subscribe();
+		event.reply("Queue cleared").queue();
 	}
 }

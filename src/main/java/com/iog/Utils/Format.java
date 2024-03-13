@@ -1,6 +1,5 @@
 package com.iog.Utils;
 
-import discord4j.rest.util.Color;
 import org.tinylog.Logger;
 
 import java.net.MalformedURLException;
@@ -8,11 +7,6 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Format {
-	
-	public static Color hexToColor(String hex) {
-		java.awt.Color color = java.awt.Color.decode(hex);
-		return Color.of(color.getRGB());
-	}
 	
 	/**
 	 * @param str Int value in string format

@@ -1,109 +1,58 @@
 package com.iog.Commands.Music;
 
+import com.iog.Utils.ConnectionUtils;
+import net.dv8tion.jda.api.entities.Guild;
+import org.jetbrains.annotations.NotNull;
+
 import com.iog.Commands.BaseCommand;
 import com.iog.MusicPlayer.GuildAudioManager;
 import com.iog.MusicPlayer.PlayerManager;
-import com.iog.Utils.CommandExecutionException;
-import com.iog.Utils.ConnectionUtils;
 import com.iog.Utils.Format;
-import discord4j.common.util.Snowflake;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.VoiceState;
-import discord4j.core.object.command.ApplicationCommand;
-import discord4j.core.object.command.ApplicationCommandOption;
-import discord4j.core.object.entity.Member;
-import discord4j.core.object.entity.Message;
-import discord4j.discordjson.json.ApplicationCommandOptionData;
-import discord4j.discordjson.json.ApplicationCommandRequest;
-import discord4j.voice.AudioProvider;
+
+import net.dv8tion.jda.api.entities.GuildVoiceState;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 public class Play extends BaseCommand {
-	
-	public Play() {
-		super(
-			new String[]{"play", "p"},
-			ApplicationCommandRequest.builder()
-				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
-				.name("play")
-				.description("Plays music")
-				.addOption(ApplicationCommandOptionData.builder()
-					.name("link-or-query")
-					.description("A query or a link to play")
-					.type(ApplicationCommandOption.Type.STRING.getValue())
-					.required(true)
-					.build()
-				).build()
-		);
-	}
-	
-	@Override
-	public void run(Message message, String[] args) throws CommandExecutionException {
-		PlayerManager playerManager = PlayerManager.getInstance();
-		final GuildAudioManager manager = GuildAudioManager.of(message.getGuildId().orElseThrow());
-		final AudioProvider provider = manager.getProvider();
-		
-		message.getAuthorAsMember().subscribe(member -> {
-			VoiceState voiceState = member.getVoiceState().block();
-			
-			if (!ConnectionUtils.botIsInSameVoiceChannel(member, message.getGuildId().orElseThrow())) {
-				message.getChannel().subscribe(channel -> channel.createMessage("You have to be in the same voice channel as I").subscribe());
-				return;
-			}
-			assert voiceState != null;
-			
-			if (args.length == 0) {
-				message.getChannel().subscribe(channel -> channel.createMessage("No arguments given to search anything").subscribe());
-				return;
-			}
-			
-			voiceState.getChannel().subscribe(voiceChannel -> voiceChannel.join(spec -> spec.setProvider(provider)).subscribe(voiceConnection -> {
-				String query;
-				
-				if (Format.isUrl(args[0].trim())) {
-					query = args[0].trim();
-				} else {
-					query = "ytsearch:" + String.join(" ", args);
-				}
-				
-				playerManager.loadAndPlay(message, null, query);
-			}));
-		});
-	}
-	
-	@Override
-	public void run(ChatInputInteractionEvent interaction) {
-		PlayerManager playerManager = PlayerManager.getInstance();
-		Snowflake guildId = interaction.getInteraction().getGuildId().orElseThrow();
-		final GuildAudioManager manager = GuildAudioManager.of(guildId);
-		final AudioProvider provider = manager.getProvider();
-		Member member = interaction.getInteraction().getMember().orElseThrow();
-		
-		VoiceState voiceState = member.getVoiceState().block();
-		
-		if (!ConnectionUtils.botIsInSameVoiceChannel(member, guildId)) {
-			interaction.editReply("You have to be in the same voice channel as I").subscribe();
-			return;
-		}
-		assert voiceState != null;
-		
-		
-		boolean queryExists = interaction.getOption("link-or-query").orElseThrow().getValue().isPresent();
-		if (!queryExists) {
-			interaction.editReply("No arguments given to search anything").subscribe();
-			return;
-		}
-		
-		
-		voiceState.getChannel().subscribe(voiceChannel -> voiceChannel.join(spec -> spec.setProvider(provider)).subscribe(voiceConnection -> {
-			String query = interaction.getOption("link-or-query").orElseThrow().getValue().orElseThrow().asString();
-			
-			if (Format.isUrl(query.trim())) {
-				query = query.trim();
-			} else {
-				query = "ytsearch:" + query;
-			}
-			
-			playerManager.loadAndPlay(null, interaction, query);
-		}));
-	}
+
+    public Play() {
+        super(
+                Commands.slash("play", "Plays music")
+                        .addOption(OptionType.STRING, "link-or-query", "A query or a link to play", true)
+        );
+    }
+
+    @Override
+    public void run(@NotNull SlashCommandInteractionEvent event) {
+        final Guild guild = event.getGuild();
+        final Member member = event.getMember();
+
+        if (!ConnectionUtils.botIsInSameVoiceChannel(member, guild)) {
+            event.reply("You have to be in the same voice channel as I").queue();
+            return;
+        }
+
+        String query = event.getOption("link-or-query").getAsString();
+
+        event.deferReply().queue();
+
+        if (!guild.getSelfMember().getVoiceState().inAudioChannel()) {
+            final GuildVoiceState memberVoiceState = member.getVoiceState();
+
+            if (memberVoiceState.inAudioChannel()) {
+                event.getJDA().getDirectAudioController().connect(memberVoiceState.getChannel());
+            }
+        }
+
+        if (Format.isUrl(query.trim())) {
+            query = query.trim();
+        } else {
+            query = "ytsearch:" + query;
+        }
+
+        PlayerManager playerManager = PlayerManager.getInstance();
+        playerManager.loadAndPlay(event, query);
+    }
 }

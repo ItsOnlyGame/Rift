@@ -3,59 +3,38 @@ package com.iog.Commands.Music;
 import com.iog.Commands.BaseCommand;
 import com.iog.MusicPlayer.GuildAudioManager;
 import com.iog.MusicPlayer.TrackQueue;
-import com.iog.Utils.CommandExecutionException;
 import com.iog.Utils.Format;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.object.command.ApplicationCommand;
-import discord4j.core.object.entity.Message;
-import discord4j.discordjson.json.ApplicationCommandRequest;
+
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.NotNull;
 
 public class Queue extends BaseCommand {
 	
 	public Queue() {
 		super(
-			new String[]{"queue", "q"},
-			ApplicationCommandRequest.builder()
-				.type(ApplicationCommand.Type.CHAT_INPUT.getValue())
-				.name("queue")
-				.description("Show the queue in this guild")
-				.build()
+            Commands.slash("queue", "Show the queue in this guild")
 		);
 	}
 	
 	@Override
-	public void run(Message message, String[] args) throws CommandExecutionException {
-		final GuildAudioManager manager = GuildAudioManager.of(message.getGuildId().orElseThrow());
+	public void run(@NotNull SlashCommandInteractionEvent event) {
+		final GuildAudioManager manager = GuildAudioManager.of(event.getGuild());
 		AudioTrack playing = manager.getPlayer().getPlayingTrack();
 		List<String> parts = createQueueMessage(manager);
 		
 		if (playing == null) {
-			message.getChannel().subscribe(channel -> channel.createMessage("Queue is empty").subscribe());
+			event.reply("Queue is empty").queue();
 			return;
 		}
 		
 		for (String part : parts) {
-			message.getChannel().subscribe(channel -> channel.createMessage(part).subscribe());
-		}
-	}
-	
-	@Override
-	public void run(ChatInputInteractionEvent interaction) {
-		final GuildAudioManager manager = GuildAudioManager.of(interaction.getInteraction().getGuildId().orElseThrow());
-		AudioTrack playing = manager.getPlayer().getPlayingTrack();
-		List<String> parts = createQueueMessage(manager);
-		
-		if (playing == null) {
-			interaction.editReply("Queue is empty").subscribe();
-			return;
-		}
-		
-		for (String part : parts) {
-			interaction.createFollowup(part).subscribe();
+			event.reply(part).queue();
 		}
 	}
 	
