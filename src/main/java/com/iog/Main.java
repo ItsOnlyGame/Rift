@@ -1,55 +1,46 @@
 package com.iog;
 
-import com.iog.Commands.CommandHandler;
-import com.iog.Handlers.EventHandler;
-import com.iog.Utils.DirectoryManager;
+import com.iog.Commands.SlashCommandListener;
+import com.iog.Handlers.GuildVoiceEvent;
 import com.iog.Utils.Settings;
-import discord4j.core.DiscordClient;
-import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.VoiceStateUpdateEvent;
-import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
-import discord4j.core.event.domain.message.MessageCreateEvent;
-import org.apache.commons.io.IOUtils;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.tinylog.Logger;
 
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class Main {
-	
-	public static final String Version = readVersion();
-	public static GatewayDiscordClient gateway;
-	
-	public static void main(String[] args) {
-		DirectoryManager.generateFolders();
-		Settings settings = Settings.getSettings();
-		
-		// Login to Discord API
-		Logger.info("Started Rift with Version: " + Version);
-		
-		final DiscordClient client = DiscordClient.create(settings.discordToken);
-		Main.gateway = client.login().block();
-		assert gateway != null;
-		
-		// Sets Discord API events and creates CommandHandler
-		CommandHandler commandHandler = new CommandHandler(client);
-		gateway.on(MessageCreateEvent.class).subscribe(commandHandler::messageCreateEvent);
-		gateway.on(ChatInputInteractionEvent.class).subscribe(commandHandler::interactionInputEvent);
-		gateway.on(VoiceStateUpdateEvent.class).subscribe(EventHandler::VoiceStateUpdate);
-		gateway.onDisconnect().block();
-	}
-	
-	
-	private static String readVersion() {
-		InputStream stream = Main.class.getResourceAsStream("version.txt");
-		try {
-			if (stream != null) {
-				return IOUtils.toString(stream, StandardCharsets.UTF_8);
-			}
-		} catch (Exception e) {
-			// Something went wrong.
-		}
-		
-		return "UNKNOWN";
-	}
+
+    public static final String Version = readVersion();
+
+    public static void main(String[] args) throws InterruptedException {
+        Settings settings = Settings.getSettings();
+
+        Logger.info("Started Rift with Version: " + Version);
+
+        final var jda = JDABuilder.createDefault(settings.discordToken)
+                .enableIntents(GatewayIntent.GUILD_VOICE_STATES)
+                .enableCache(CacheFlag.VOICE_STATE)
+                .addEventListeners(new SlashCommandListener())
+                .addEventListeners(new GuildVoiceEvent())
+                .build()
+                .awaitReady();
+    }
+
+    private static String readVersion() {
+        InputStream inputStream = Main.class.getResourceAsStream("version.txt");
+
+        if (inputStream  != null) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                return reader.readLine();
+            } catch (IOException e) {
+                Logger.error("Version file read error");
+            }
+        }
+
+        return "UNKNOWN";
+    }
 }
