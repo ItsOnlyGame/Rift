@@ -1,5 +1,12 @@
 # Change Log
 
+## [6.0.0] | 13.03.2024
+- Switched to JDA.
+- Switched LavaPlayer forks.
+- Removed commands: Lyrics, SoundCloud, Spotify, Delete, Echo, Help, and Prefix.
+- Removed message command support, only leaving slash commands.
+
+
 ## [5.1.1] | 29.08.2023
 ### Updated
 - Updated lavaplayer dependency to fix issues with music playback

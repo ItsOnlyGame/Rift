@@ -42,9 +42,9 @@ public class SlashCommandListener extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         Logger.info(event.getJDA().getSelfUser().getName() + " is ready!");
 
-        event.getJDA().getGuildById("470663939097886720").updateCommands()
-                .addCommands(commands.stream().map(BaseCommand::getSlashCommandData).toArray(SlashCommandData[]::new))
-                .queue();
+//        event.getJDA().getGuildById("470663939097886720").updateCommands()
+//                .addCommands(commands.stream().map(BaseCommand::getSlashCommandData).toArray(SlashCommandData[]::new))
+//                .queue();
 
 		event.getJDA().updateCommands()
 				.addCommands(commands.stream().map(BaseCommand::getSlashCommandData).toArray(SlashCommandData[]::new))
