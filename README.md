@@ -7,7 +7,7 @@ Feature suggestions and bug reports are appreciated
 
 ### Requirement
 
-- Java 11
+- Java 21
 - Discord Developer application token
 - (Optional) Spotify Developer tokens
 
