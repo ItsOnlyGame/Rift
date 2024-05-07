@@ -16,10 +16,12 @@ application {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
+    maven(url = "https://maven.lavalink.dev/releases")
 }
 
 dependencies {
-    implementation("dev.arbjerg:lavaplayer:2.1.1")
+    implementation("dev.lavalink.youtube:v2:1.1.0")
+    implementation("dev.arbjerg:lavaplayer:2.1.2")
     implementation("net.dv8tion:JDA:5.0.0-beta.21")
     implementation("com.google.code.gson:gson:2.10.1")
 

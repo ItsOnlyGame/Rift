@@ -4,7 +4,6 @@ import com.iog.MusicPlayer.Spotify.Handlers.*;
 import com.neovisionaries.i18n.CountryCode;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchMusicProvider;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.track.*;
@@ -12,6 +11,10 @@ import com.wrapper.spotify.SpotifyApi;
 import com.wrapper.spotify.exceptions.SpotifyWebApiException;
 import com.wrapper.spotify.model_objects.credentials.ClientCredentials;
 import com.wrapper.spotify.requests.authorization.client_credentials.ClientCredentialsRequest;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.clients.AndroidWithThumbnail;
+import dev.lavalink.youtube.clients.MusicWithThumbnail;
+import dev.lavalink.youtube.clients.WebWithThumbnail;
 import org.apache.commons.codec.binary.StringUtils;
 import org.apache.hc.core5.http.ParseException;
 import org.tinylog.Logger;
@@ -54,7 +57,7 @@ public class SpotifyAudioSourceManager implements AudioSourceManager {
 		this.audioTrackFactory = new AudioTrackFactory(
 				new YoutubeSearchProvider(),
 				new YoutubeSearchMusicProvider(),
-				new YoutubeAudioSourceManager()
+				new YoutubeAudioSourceManager(true, new MusicWithThumbnail(), new WebWithThumbnail(), new AndroidWithThumbnail())
 		);
 
 		this.artistHandle = new SpotifyArtistLoader();

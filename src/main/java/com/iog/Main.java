@@ -23,7 +23,7 @@ public class Main {
 
         Logger.info("Started Rift with Version: " + Version);
 
-        final var jda = JDABuilder.createDefault(settings.discordToken)
+        JDABuilder.createDefault(settings.discordToken)
                 .enableIntents(GatewayIntent.GUILD_VOICE_STATES)
                 .enableCache(CacheFlag.VOICE_STATE)
                 .addEventListeners(new SlashCommandListener())

@@ -1,5 +1,10 @@
 # Change Log
 
+## [6.0.1] | 07.05.2024
+- Update Lavaplayer
+- Using "dev.lavalink.youtube:v2:1.1.0" for handling youtube audio requests
+  - Fixes issues with playing youtube links
+
 ## [6.0.0] | 13.03.2024
 - Switched to JDA.
 - Switched LavaPlayer forks.

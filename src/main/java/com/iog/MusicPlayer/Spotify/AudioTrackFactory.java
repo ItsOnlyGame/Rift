@@ -1,10 +1,10 @@
 package com.iog.MusicPlayer.Spotify;
 
-import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchMusicProvider;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeSearchProvider;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
