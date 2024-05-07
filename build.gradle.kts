@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.iog"
-version = "6.0.0"
+version = "6.0.1"
 
 application {
     mainClass = "com.iog.Main"
